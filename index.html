@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Raíz Andina — Harinas y superalimentos naturales</title>
+  <meta name="description" content="Cúrcuma, maca, quinua, cacao y más harinas naturales del Perú. Pide por WhatsApp y recibe en tu casa." />
+  <meta property="og:title" content="Raíz Andina — Harinas y superalimentos naturales" />
+  <meta property="og:description" content="Cúrcuma, maca, quinua, cacao y más. Pide por WhatsApp." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23E39B0B'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Banda superior -->
+  <a class="topband" href="#como-comprar">
+    <span>Envíos a todo Lima · Provincias por agencia</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="#" class="brand" aria-label="Raíz Andina, inicio">raíz andina<span class="brand__dot"></span></a>
+      <nav class="nav" aria-label="Principal">
+        <a href="#productos">Productos</a>
+        <a href="#beneficios">Beneficios</a>
+        <a href="#como-comprar">Cómo comprar</a>
+        <a href="#faq">Preguntas</a>
+      </nav>
+      <a class="btn btn--ghost header__cta" data-wa href="#">Pedir por WhatsApp</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container">
+        <div class="constellation" aria-hidden="true">
+          <div class="float-card fc-1"><div class="swatch" style="--c1:#F2B21C;--c2:#C9800A"></div><span>Cúrcuma</span></div>
+          <div class="float-card fc-2"><div class="swatch" style="--c1:#EFE2BE;--c2:#D4BE86"></div><span>Maca</span></div>
+          <div class="float-card fc-3"><div class="swatch" style="--c1:#7A4A2E;--c2:#4A2817"></div><span>Cacao</span></div>
+          <div class="float-card fc-4"><div class="swatch" style="--c1:#F0DFC2;--c2:#D8C29A"></div><span>Quinua</span></div>
+          <div class="float-card fc-5"><div class="swatch" style="--c1:#EDB46A;--c2:#C9853B"></div><span>Lúcuma</span></div>
+        </div>
+
+        <h1 class="hero__title">Harinas naturales del Perú,<br />molidas para tu cocina.</h1>
+        <p class="hero__sub">Cúrcuma, maca, quinua, cacao y más. Sin aditivos, en empaques sellados y listas para tus batidos, panes y comidas.</p>
+
+        <form class="search" role="search" onsubmit="return false">
+          <label for="q" class="sr-only">Buscar producto</label>
+          <input id="q" type="search" placeholder="¿Qué harina estás buscando?" autocomplete="off" />
+          <button type="button" class="search__btn" aria-label="Ver productos" data-scroll="#productos">
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </form>
+
+        <div class="pills" id="pills" role="toolbar" aria-label="Filtrar por categoría"></div>
+      </div>
+    </section>
+
+    <!-- PRODUCTOS -->
+    <section class="section" id="productos">
+      <div class="container">
+        <div class="section__head">
+          <h2>Nuestros productos <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></h2>
+          <p class="muted" id="count"></p>
+        </div>
+        <div class="grid" id="grid"></div>
+        <p class="empty muted" id="empty" hidden>No encontramos ese producto. Escríbenos por WhatsApp y te ayudamos.</p>
+      </div>
+    </section>
+
+    <!-- DESTACADO -->
+    <section class="section">
+      <div class="container feature">
+        <div class="feature__img" aria-hidden="true">
+          <div class="feature__label">
+            <strong>Cúrcuma en polvo</strong>
+            <span>Nuestro producto estrella</span>
+          </div>
+        </div>
+        <div class="feature__body">
+          <span class="eyebrow">Destacado</span>
+          <h2>Cúrcuma pura, color intenso y aroma fresco.</h2>
+          <p class="muted">Raíz seleccionada, secada y molida en lotes pequeños. Úsala en golden milk, guisos, arroces o batidos. Combínala con una pizca de pimienta negra.</p>
+          <ul class="checks">
+            <li>100% cúrcuma, sin rellenos</li>
+            <li>Empaque doypack con cierre</li>
+            <li>Presentaciones de 250 g y 500 g</li>
+          </ul>
+          <a class="btn btn--primary" data-wa data-msg="Hola, quiero pedir Cúrcuma en polvo" href="#">Pedir cúrcuma</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- BENEFICIOS -->
+    <section class="section" id="beneficios">
+      <div class="container">
+        <div class="section__head"><h2>Por qué elegirnos</h2></div>
+        <div class="benefits">
+          <article class="benefit">
+            <div class="benefit__icon"><svg viewBox="0 0 24 24"><path d="M12 21c-4-3-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-3 8-7 11z"/><path d="M12 7v7M9 10.5h6"/></svg></div>
+            <h3>Origen peruano</h3>
+            <p class="muted">Trabajamos con productores de la sierra y selva del Perú.</p>
+          </article>
+          <article class="benefit">
+            <div class="benefit__icon"><svg viewBox="0 0 24 24"><path d="M5 12l4 4L19 6"/></svg></div>
+            <h3>Sin aditivos</h3>
+            <p class="muted">Solo el ingrediente. Sin colorantes, saborizantes ni rellenos.</p>
+          </article>
+          <article class="benefit">
+            <div class="benefit__icon"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="3"/><path d="M9 4v3h6V4"/></svg></div>
+            <h3>Empaque sellado</h3>
+            <p class="muted">Doypack con cierre para conservar aroma y frescura.</p>
+          </article>
+          <article class="benefit">
+            <div class="benefit__icon"><svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg></div>
+            <h3>Envío rápido</h3>
+            <p class="muted">Delivery en Lima y envíos a provincias por agencia.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CÓMO COMPRAR -->
+    <section class="section" id="como-comprar">
+      <div class="container">
+        <div class="section__head"><h2>Cómo comprar</h2></div>
+        <ol class="steps">
+          <li class="step"><span class="step__n">1</span><h3>Elige tus productos</h3><p class="muted">Agrega lo que quieras al pedido desde esta página.</p></li>
+          <li class="step"><span class="step__n">2</span><h3>Envía tu pedido</h3><p class="muted">Te llega a WhatsApp con el detalle listo. Confirmamos stock y costo de envío.</p></li>
+          <li class="step"><span class="step__n">3</span><h3>Paga y recibe</h3><p class="muted">Yape, Plin o transferencia. Despachamos el mismo día o al siguiente.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <div class="container faq">
+        <div class="section__head"><h2>Preguntas frecuentes</h2></div>
+        <details><summary>¿Hacen envíos a provincias?</summary><p class="muted">Sí, enviamos por agencia (Shalom, Olva u otra que prefieras). El costo depende del destino.</p></details>
+        <details><summary>¿Cuánto duran los productos?</summary><p class="muted">Entre 6 y 12 meses cerrados, según el producto. Una vez abiertos, guárdalos en un lugar fresco y seco.</p></details>
+        <details><summary>¿Venden por mayor?</summary><p class="muted">Sí. Escríbenos por WhatsApp indicando cantidades y te enviamos una cotización.</p></details>
+        <details><summary>¿Qué medios de pago aceptan?</summary><p class="muted">Yape, Plin y transferencia bancaria.</p></details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>
+        <div class="brand brand--light">raíz andina<span class="brand__dot"></span></div>
+        <p class="footer__muted">Harinas y superalimentos naturales del Perú.</p>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <a data-wa href="#">WhatsApp</a>
+        <a href="mailto:contacto@ejemplo.com" id="mail">contacto@ejemplo.com</a>
+        <a href="#" id="ig">Instagram</a>
+      </div>
+      <div>
+        <h4>Tienda</h4>
+        <a href="#productos">Productos</a>
+        <a href="#como-comprar">Cómo comprar</a>
+        <a href="#faq">Preguntas frecuentes</a>
+      </div>
+    </div>
+    <div class="container footer__legal">© <span id="year"></span> Raíz Andina. Todos los derechos reservados.</div>
+  </footer>
+
+  <!-- Barra de pedido -->
+  <div class="cartbar" id="cartbar" hidden>
+    <div class="cartbar__info"><strong id="cartCount">0 productos</strong><span id="cartTotal">S/ 0.00</span></div>
+    <button class="btn btn--primary" id="sendOrder">Enviar pedido por WhatsApp</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
