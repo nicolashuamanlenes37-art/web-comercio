@@ -1,0 +1,71 @@
+/* Imagen a sangre con etiqueta blanca abajo a la izquierda */
+.tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--color-stone);
+  aspect-ratio: 4 / 5;
+}
+.tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s var(--ease-out);
+}
+@media (hover: hover) {
+  .tile:hover img {
+    transform: scale(1.04);
+  }
+}
+.tile__label {
+  position: absolute;
+  left: var(--space-3);
+  bottom: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: calc(100% - var(--space-6));
+  padding: var(--space-3);
+  border-radius: var(--radius-chip);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.tile__label strong {
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-sm);
+}
+.tile__label span {
+  color: var(--color-muted);
+  font-size: var(--text-xs);
+}
+
+/* Dentro de una grilla: ocupa la altura de la fila */
+.tile--fill {
+  aspect-ratio: auto;
+  min-height: 100%;
+}
+/* Variante oscura: texto blanco sobre la foto, arriba a la izquierda */
+.tile--dark {
+  background: var(--color-dark);
+}
+.tile__overlay {
+  position: absolute;
+  left: var(--space-5);
+  top: var(--space-5);
+  right: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  color: #fff;
+}
+.tile__overlay strong {
+  font-size: clamp(22px, 2.4vw, 28px);
+  font-weight: 600;
+  letter-spacing: var(--tracking-lg);
+  line-height: 1.05;
+}
+.tile__overlay span {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: var(--text-sm);
+}

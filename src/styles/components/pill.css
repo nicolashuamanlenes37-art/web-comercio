@@ -1,0 +1,63 @@
+/* Chips de categoría */
+.pill {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 40px;
+  padding: 0 var(--space-4) 0 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-pill);
+  font-size: var(--text-md);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.2s var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+.pill:first-child {
+  padding-left: var(--space-4);
+}
+.pill:hover {
+  border-color: var(--color-stone);
+}
+.pill:active {
+  transform: scale(0.96);
+}
+.pill.is-active {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: #fff;
+}
+.pill__swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+/* Selector de presentación */
+.segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--color-canvas);
+}
+.segmented button {
+  height: 28px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.segmented button[aria-checked='true'] {
+  background: var(--color-surface);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-pill);
+}

@@ -1,0 +1,16 @@
+/* Orden: tokens → base → componentes → secciones */
+@import './tokens.css';
+@import './base.css';
+
+@import './components/button.css';
+@import './components/pill.css';
+@import './components/product-card.css';
+@import './components/tile.css';
+@import './components/drawer.css';
+
+@import './sections/header.css';
+@import './sections/hero.css';
+@import './sections/catalog.css';
+@import './sections/steps.css';
+@import './sections/faq.css';
+@import './sections/footer.css';

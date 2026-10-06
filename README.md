@@ -1,21 +1,54 @@
-# web-comercio — Landing de harinas y superalimentos
+# web-comercio
 
-Sitio estático (HTML + CSS + JS, sin dependencias). Vercel lo despliega tal cual: no requiere build.
+Landing de venta de harinas y superalimentos con pedido por WhatsApp.
+Hecha con [Vite](https://vite.dev) y JavaScript sin frameworks.
 
-## Archivos
-- `index.html`: estructura y textos de la página.
-- `styles.css`: sistema visual (colores, radios, sombras).
-- `app.js`: **configuración** (WhatsApp y productos) y lógica del catálogo y el pedido.
+## Desarrollo
+
+```bash
+npm install
+npm run dev      # servidor local con recarga
+npm run build    # genera /dist para producción
+npm run preview  # sirve /dist para revisarlo
+```
+
+## Estructura
+
+```
+index.html                 Estructura y textos de la página
+public/                    Archivos estáticos (favicon, fotos en /images)
+src/
+  main.js                  Punto de entrada: inicia cada sección
+  config.js                Datos de la tienda (WhatsApp, moneda, correo)
+  data/products.js         Catálogo, categorías y fotos
+  store/cart.js            Estado del pedido
+  components/productCard.js Tarjetas de producto
+  sections/
+    header.js              Header fijo
+    hero.js                Constelación 3D, buscador y categorías
+    catalog.js             Bandas por categoría y filtros
+    cartDrawer.js          Barra y panel del pedido
+  lib/                     Utilidades (DOM, formato, WhatsApp, animación)
+  styles/
+    tokens.css             Colores, tipografía, espacios, radios, sombras
+    base.css               Reset y utilidades
+    components/            Botones, chips, tarjetas, fotos, panel
+    sections/              Estilos por sección
+```
 
 ## Qué editar
-1. **WhatsApp:** en `app.js`, `CONFIG.whatsapp` → número con código de país, sin `+` (ej. `51987654321`).
-2. **Productos y precios:** en `app.js`, lista `PRODUCTOS`.
-3. **Fotos:** guárdalas en `img/` (cuadradas, ~1000×1000, .jpg o .webp) y añade `img: "img/curcuma.jpg"` al producto.
-4. **Nombre / textos / contacto:** en `index.html` (busca "Raíz Andina", "contacto@ejemplo.com", "Instagram").
 
-## Ver en local
-Abre `index.html` en el navegador, o ejecuta `npx serve .`
+| Qué | Dónde |
+| --- | --- |
+| Número de WhatsApp, correo, Instagram | `src/config.js` |
+| Productos, precios, presentaciones | `src/data/products.js` |
+| Fotos | Guardarlas en `public/images/` y usar `image: '/images/curcuma.jpg'` |
+| Textos de secciones, preguntas frecuentes | `index.html` |
+| Colores y tipografía | `src/styles/tokens.css` |
+
+Las fotos actuales son de [Unsplash](https://unsplash.com) (uso libre) y sirven solo para la vista previa.
 
 ## Despliegue
-Vercel → Add New → Project → importar este repo → Framework: **Other** → Deploy.
-Cada `git push` a `main` vuelve a publicar.
+
+Vercel detecta Vite automáticamente: **Build** `npm run build`, **Output** `dist`.
+Cada push a `main` publica una nueva versión.

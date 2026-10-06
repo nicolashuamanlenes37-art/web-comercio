@@ -1,0 +1,191 @@
+/* Barra flotante del pedido */
+.order-bar {
+  position: fixed;
+  left: 50%;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: calc(100% - 2 * var(--gutter));
+  max-width: 440px;
+  padding: 6px 6px 6px 6px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-ink);
+  color: #fff;
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.4);
+  text-align: left;
+  cursor: pointer;
+  transform: translateX(-50%);
+  animation: barIn 0.5s var(--ease-spring);
+}
+.order-bar.is-bump {
+  animation: barBump 0.4s var(--ease-spring);
+}
+@keyframes barIn {
+  from { transform: translate(-50%, 120%); }
+}
+@keyframes barBump {
+  40% { transform: translateX(-50%) scale(1.03); }
+}
+.order-bar__count {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  font-weight: 600;
+}
+.order-bar__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  font-size: var(--text-sm);
+  line-height: 1.2;
+}
+.order-bar__text span {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: var(--text-xs);
+}
+.order-bar__cta {
+  height: 40px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 40px;
+}
+
+/* Panel lateral (escritorio) / hoja inferior (móvil) */
+.drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+}
+.drawer__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-out);
+}
+.drawer__panel {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  flex-direction: column;
+  max-height: 88dvh;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  background: var(--color-surface);
+  transform: translateY(100%);
+  transition: transform 0.45s var(--ease-out);
+}
+@media (min-width: 768px) {
+  .drawer__panel {
+    inset: 12px 12px 12px auto;
+    width: 420px;
+    max-height: none;
+    border-radius: var(--radius-card);
+    transform: translateX(calc(100% + 24px));
+  }
+}
+.drawer.is-open .drawer__backdrop {
+  opacity: 1;
+}
+.drawer.is-open .drawer__panel {
+  transform: none;
+}
+
+.drawer__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-4) var(--space-2) var(--space-6);
+}
+.drawer__head h2 {
+  font-size: var(--text-lg);
+  letter-spacing: var(--tracking-lg);
+}
+.drawer__lines {
+  flex: 1;
+  margin: 0;
+  padding: var(--space-2) var(--space-4);
+  overflow-y: auto;
+  list-style: none;
+}
+.drawer__empty {
+  flex: 1;
+  padding: var(--space-6);
+  color: var(--color-muted);
+}
+.line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2);
+  border-radius: var(--radius-media);
+}
+.line + .line {
+  margin-top: var(--space-1);
+}
+.line__img {
+  width: 56px;
+  height: 56px;
+  flex: none;
+  object-fit: cover;
+  border-radius: var(--radius-chip);
+}
+.line__info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  font-size: var(--text-sm);
+}
+.line__info span {
+  color: var(--color-muted);
+  font-size: var(--text-xs);
+}
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--color-canvas);
+}
+.stepper button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-surface);
+  cursor: pointer;
+}
+.stepper span {
+  min-width: 18px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-align: center;
+}
+.drawer__foot {
+  padding: var(--space-4) var(--space-6) max(var(--space-6), env(safe-area-inset-bottom));
+  border-top: 1px solid var(--color-border);
+}
+.drawer__total {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-md);
+}
+.drawer__note {
+  margin: var(--space-1) 0 var(--space-4);
+  color: var(--color-muted);
+  font-size: var(--text-xs);
+}

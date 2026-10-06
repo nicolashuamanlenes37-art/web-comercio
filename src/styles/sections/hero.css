@@ -1,0 +1,201 @@
+/**
+ * Hero: constelación de tarjetas de producto flotando sobre la marca.
+ * Variables que pone hero.js:  --mx / --my (mouse, -1…1)  ·  --scroll (0…1)
+ */
+.hero {
+  --mx: 0;
+  --my: 0;
+  --scroll: 0;
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-6) 0 var(--space-16);
+  background: var(--color-surface);
+}
+
+/* ---------- Constelación ---------- */
+.constellation {
+  position: relative;
+  height: 258px;
+  max-width: 1100px;
+  margin: 0 auto 4px;
+  perspective: 1400px;
+}
+.constellation__scene {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(calc(var(--my) * -6deg)) rotateY(calc(var(--mx) * 8deg));
+}
+
+/* Cada tarjeta: posición (x, y), ancho (w) y profundidad (z) */
+.float-slot {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  z-index: var(--layer, 1);
+  transform:
+    translateX(-50%)
+    translate3d(0, calc(var(--scroll) * var(--z) * -3px), calc(var(--z) * 1px))
+    rotate(var(--r, 0deg));
+  will-change: transform;
+}
+.float-slot__in {
+  opacity: 0;
+  transform: translateY(40px) scale(0.92);
+  animation: floatIn 1s var(--ease-spring) forwards;
+  animation-delay: var(--d, 0s);
+}
+@keyframes floatIn {
+  to { opacity: 1; transform: none; }
+}
+.float-slot .float-card {
+  animation: drift 7s ease-in-out infinite;
+  animation-delay: calc(var(--d, 0s) * -4);
+}
+@keyframes drift {
+  50% { translate: 0 -8px; }
+}
+
+/* Móvil: 5 tarjetas, las de los extremos se salen del borde */
+.float-slot--1 { --x: 50%; --y: 0px;   --w: 132px; --z: 60; --layer: 5; --d: 0.05s; }
+.float-slot--2 { --x: 20%; --y: 40px;  --w: 108px; --z: 30; --layer: 4; --d: 0.15s; --r: -3deg; }
+.float-slot--3 { --x: 80%; --y: 34px;  --w: 108px; --z: 40; --layer: 4; --d: 0.2s;  --r: 3deg; }
+.float-slot--4 { --x: -2%; --y: 104px; --w: 96px; --z: 10; --layer: 2; --d: 0.3s;  --r: -4deg; }
+.float-slot--5 { --x: 102%; --y: 98px; --w: 96px; --z: 15; --layer: 2; --d: 0.35s; --r: 4deg; }
+.float-slot--6,
+.float-slot--7 { display: none; }
+
+@media (min-width: 640px) {
+  .constellation { height: 330px; }
+  .float-slot--1 { --w: 170px; }
+  .float-slot--2 { --x: 27%; --w: 146px; }
+  .float-slot--3 { --x: 73%; --w: 146px; }
+  .float-slot--4 { --x: 6%;  --w: 128px; --y: 150px; }
+  .float-slot--5 { --x: 94%; --w: 128px; --y: 140px; }
+}
+
+@media (min-width: 1024px) {
+  .hero { padding-top: var(--space-10); }
+  .constellation { height: 372px; margin-bottom: -24px; }
+  .float-slot--1 { --x: 50%; --y: 0px;   --w: 200px; }
+  .float-slot--2 { --x: 32%; --y: 52px;  --w: 172px; }
+  .float-slot--3 { --x: 68%; --y: 40px;  --w: 176px; }
+  .float-slot--4 { --x: 14%; --y: 150px; --w: 156px; }
+  .float-slot--5 { --x: 86%; --y: 140px; --w: 156px; }
+  .float-slot--6 { display: block; --x: 1%; --y: 40px; --w: 132px; --z: -20; --layer: 1; --d: 0.45s; --r: -5deg; }
+  .float-slot--7 { display: block; --x: 99%; --y: 30px; --w: 132px; --z: -10; --layer: 1; --d: 0.5s; --r: 5deg; }
+}
+
+/* ---------- Marca + buscador ---------- */
+.hero__body {
+  position: relative;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.wordmark {
+  font-size: clamp(56px, 15.5vw, 168px);
+  font-weight: 600;
+  line-height: 0.9;
+  letter-spacing: -0.075em;
+  color: var(--color-accent);
+  opacity: 0;
+  animation: fadeUp 0.9s var(--ease-out) 0.2s forwards;
+}
+.wordmark .dot {
+  width: 0.14em;
+  height: 0.14em;
+  background: var(--color-ink);
+}
+.hero__tagline {
+  margin-top: var(--space-4);
+  color: var(--color-muted);
+  font-size: var(--text-md);
+  opacity: 0;
+  animation: fadeUp 0.9s var(--ease-out) 0.35s forwards;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 560px;
+  margin-top: var(--space-6);
+  padding: 4px 4px 4px var(--space-5);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-pill);
+  opacity: 0;
+  animation: fadeUp 0.9s var(--ease-out) 0.45s forwards;
+  transition: border-color 0.2s;
+}
+.search:focus-within {
+  border-color: rgba(0, 0, 0, 0.35);
+}
+.search input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  font-size: var(--text-md);
+  color: var(--color-ink);
+}
+.search input::placeholder {
+  color: var(--color-muted);
+}
+.search input::-webkit-search-cancel-button {
+  display: none;
+}
+.search__submit {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
+  box-shadow: var(--shadow-accent);
+  cursor: pointer;
+  transition: transform 0.2s var(--ease-out);
+}
+.search__submit:hover {
+  transform: translateX(2px);
+}
+.search__submit:active {
+  transform: scale(0.94);
+}
+
+.category-pills {
+  display: flex;
+  gap: var(--space-2);
+  max-width: 100%;
+  margin: var(--space-5) calc(var(--gutter) * -1) 0;
+  padding: 4px var(--gutter) 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  opacity: 0;
+  animation: fadeUp 0.9s var(--ease-out) 0.55s forwards;
+}
+.category-pills::-webkit-scrollbar {
+  display: none;
+}
+@media (min-width: 640px) {
+  .category-pills {
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow: visible;
+  }
+}

@@ -1,0 +1,166 @@
+/* Tarjeta de producto: imagen primero, texto como apoyo */
+.product {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-2);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
+}
+@media (hover: hover) {
+  .product:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px -12px rgba(0, 0, 0, 0.18), 0 2px 4px -2px rgba(0, 0, 0, 0.08);
+  }
+  .product:hover .product__media img {
+    transform: scale(1.04);
+  }
+}
+.product.is-highlight {
+  animation: highlight 1.4s var(--ease-out);
+}
+@keyframes highlight {
+  0%, 60% { box-shadow: 0 0 0 3px var(--color-accent), var(--shadow-card); }
+}
+
+.product__media {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: var(--radius-media);
+  background: var(--color-canvas);
+}
+.product__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out);
+}
+.product__badge {
+  position: absolute;
+  left: var(--space-2);
+  top: var(--space-2);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.92);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-xs);
+}
+
+.product__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-2) var(--space-1);
+}
+.product__name {
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-sm);
+  line-height: 1.25;
+}
+.product__desc {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--color-muted);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-xs);
+  line-height: 1.35;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.product .segmented {
+  align-self: flex-start;
+  margin-top: var(--space-2);
+}
+.product__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: auto;
+  padding-top: var(--space-3);
+}
+.product__price {
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+.add-btn {
+  display: inline-grid;
+  place-items: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-pill);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s var(--ease-out), background 0.2s, border-color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.add-btn:hover {
+  border-color: var(--color-stone);
+}
+.add-btn:active {
+  transform: scale(0.9);
+}
+.add-btn.is-added {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: #fff;
+}
+.add-btn.is-pop {
+  animation: pop 0.4s var(--ease-spring);
+}
+@keyframes pop {
+  40% { transform: scale(1.15); }
+}
+
+/* Tarjeta flotante del hero (versión compacta) */
+.float-card {
+  display: block;
+  padding: var(--space-2) var(--space-2) var(--space-3);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-float);
+  text-decoration: none;
+  transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
+}
+.float-card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--radius-media);
+  background: var(--color-canvas);
+}
+.float-card__name,
+.float-card__meta {
+  display: block;
+  padding-inline: var(--space-1);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.float-card__name {
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: var(--tracking-sm);
+}
+.float-card__meta {
+  color: var(--color-muted);
+  font-size: var(--text-xs);
+}
+@media (hover: hover) {
+  .float-card:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.25);
+  }
+}
