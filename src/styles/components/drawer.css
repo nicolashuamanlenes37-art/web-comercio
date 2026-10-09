@@ -136,7 +136,10 @@
   width: 56px;
   height: 56px;
   flex: none;
-  object-fit: cover;
+  object-fit: contain;
+  padding: 3px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--color-border);
   border-radius: var(--radius-chip);
 }
 .line__info {
