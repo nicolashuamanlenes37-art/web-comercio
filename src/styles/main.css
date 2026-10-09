@@ -1,4 +1,5 @@
 /* Orden: tokens → base → componentes → secciones */
+@import '@fontsource-variable/inter/wght.css';
 @import './tokens.css';
 @import './base.css';
 

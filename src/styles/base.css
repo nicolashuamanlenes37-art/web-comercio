@@ -82,15 +82,6 @@ button {
   top: 12px;
 }
 
-.dot {
-  display: inline-block;
-  width: 0.2em;
-  height: 0.2em;
-  margin-left: 0.04em;
-  border-radius: 50%;
-  background: var(--color-accent);
-}
-
 /* Revelado al entrar en pantalla (usa `translate` para no pisar otros transforms) */
 [data-reveal] {
   opacity: 0;

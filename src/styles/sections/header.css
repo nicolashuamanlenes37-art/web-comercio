@@ -50,16 +50,13 @@
   }
 }
 
-.wordmark-sm {
-  font-size: 22px;
-  font-weight: 600;
-  letter-spacing: -0.065em;
-  color: var(--color-accent);
-  text-decoration: none;
+.logo img {
+  display: block;
+  width: auto;
+  height: 32px;
 }
-.wordmark-sm .dot {
-  background: var(--color-ink);
-}
-.wordmark-sm--light .dot {
-  background: #fff;
+@media (min-width: 768px) {
+  .logo img {
+    height: 36px;
+  }
 }

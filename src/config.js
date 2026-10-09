@@ -1,14 +1,28 @@
 /**
  * Datos de la tienda. Es el único archivo que hay que tocar
- * para cambiar contacto, moneda o nombre.
+ * para cambiar contacto o nombre.
  */
 export const STORE = {
-  name: 'Raíz Andina',
-  wordmark: 'raíz andina',
-  tagline: 'Harinas y superalimentos naturales del Perú.',
-  // Número de WhatsApp con código de país, sin "+" ni espacios. Ej: 51987654321
-  whatsapp: '51999999999',
+  name: 'Accesorios N&D',
+  tagline: 'Accesorios para celular, computadora y hogar, artículos de limpieza y más.',
+  // Número de WhatsApp con código de país, sin "+" ni espacios.
+  whatsapp: '51916083665',
   currency: 'S/',
-  email: 'contacto@ejemplo.com',
-  instagram: '#',
+  email: '',
+  instagram: '',
+  city: 'Lima, Perú',
+
+  // Datos del proveedor para el Libro de Reclamaciones y las páginas legales.
+  legal: {
+    owner: 'Nicolás [apellidos por completar]',
+    document: 'DNI / RUC: [por completar]',
+    address: '[Dirección del local por completar]',
+  },
+};
+
+/** Conexión a Supabase (se configura con variables de entorno, ver .env.example). */
+export const SUPABASE = {
+  url: import.meta.env.VITE_SUPABASE_URL || '',
+  key: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '',
+  bucket: 'productos',
 };

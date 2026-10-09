@@ -1,6 +1,7 @@
 import { $, esc, icon } from '../lib/dom.js';
-import { money, weight, plural } from '../lib/format.js';
+import { money, priceLabel, plural } from '../lib/format.js';
 import { waLink, orderMessage } from '../lib/whatsapp.js';
+import { PLACEHOLDER } from '../components/productCard.js';
 import { cart } from '../store/cart.js';
 
 let lastFocus = null;
@@ -9,29 +10,31 @@ function render() {
   const lines = cart.lines();
   const count = cart.count();
   const subtotal = cart.subtotal();
+  const unpriced = cart.hasUnpriced();
 
-  // Header
   const badge = $('#cartBadge');
   badge.hidden = count === 0;
   badge.textContent = count;
 
-  // Barra flotante
   $('#orderBar').hidden = count === 0;
   $('#orderBarCount').textContent = count;
-  $('#orderBarTotal').textContent = `${plural(count, 'producto', 'productos')} · ${money(subtotal)}`;
+  $('#orderBarTotal').textContent =
+    subtotal > 0 ? `${plural(count, 'producto', 'productos')} · ${money(subtotal)}` : plural(count, 'producto', 'productos');
 
-  // Panel
   $('#drawerEmpty').hidden = lines.length > 0;
   $('#sendOrder').disabled = lines.length === 0;
-  $('#drawerSubtotal').textContent = money(subtotal);
+  $('#drawerSubtotal').textContent = subtotal > 0 ? money(subtotal) : 'Por confirmar';
+  $('#drawerNote').textContent = unpriced
+    ? 'Los productos sin precio y el envío se confirman por WhatsApp.'
+    : 'El costo de envío se confirma por WhatsApp.';
   $('#drawerLines').innerHTML = lines
     .map(
       (l) => `
-    <li class="line" data-key="${l.key}">
-      <img class="line__img" src="${esc(l.product.image)}" alt="" width="64" height="64" />
+    <li class="line" data-id="${esc(l.product.id)}">
+      <img class="line__img" src="${esc(l.product.image || PLACEHOLDER)}" alt="" width="56" height="56" />
       <div class="line__info">
         <strong>${esc(l.product.name)}</strong>
-        <span>${weight(l.size.grams)} · ${money(l.size.price)}</span>
+        <span>${priceLabel(l.product.price)}</span>
       </div>
       <div class="stepper" aria-label="Cantidad">
         <button type="button" data-step="-1" aria-label="Quitar uno">${icon.minus}</button>
@@ -56,7 +59,7 @@ export function openDrawer() {
   drawer.hidden = false;
   requestAnimationFrame(() => drawer.classList.add('is-open'));
   document.documentElement.classList.add('no-scroll');
-  $('#drawer .drawer__head .icon-btn').focus();
+  $('#drawer [data-close].icon-btn').focus();
 }
 
 export function closeDrawer() {
@@ -75,9 +78,8 @@ export function initCartDrawer() {
     if (e.target.closest('[data-close]')) return closeDrawer();
     const step = e.target.closest('[data-step]');
     if (step) {
-      const key = step.closest('.line').dataset.key;
-      const line = cart.lines().find((l) => l.key === key);
-      cart.set(key, line.qty + Number(step.dataset.step));
+      const id = step.closest('.line').dataset.id;
+      cart.set(id, cart.qty(id) + Number(step.dataset.step));
     }
   });
 
@@ -86,7 +88,8 @@ export function initCartDrawer() {
   });
 
   $('#sendOrder').addEventListener('click', () => {
-    window.open(waLink(orderMessage(cart.lines(), cart.subtotal())), '_blank', 'noopener');
+    const msg = orderMessage(cart.lines(), cart.subtotal(), cart.hasUnpriced());
+    window.open(waLink(msg), '_blank', 'noopener');
   });
 
   cart.onChange((ev) => {

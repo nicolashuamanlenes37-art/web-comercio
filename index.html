@@ -3,38 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Raíz Andina · Harinas y superalimentos naturales del Perú</title>
-    <meta name="description" content="Cúrcuma, maca, quinua, cacao y más harinas naturales del Perú. Sin aditivos. Pide por WhatsApp y recibe en tu casa." />
+    <title>Accesorios N&amp;D · Tecnología, hogar, limpieza y más</title>
+    <meta name="description" content="Cables, cargadores, audífonos, cases, artículos de hogar y limpieza, bebidas y harinas. Arma tu pedido y envíalo por WhatsApp." />
     <meta name="theme-color" content="#ffffff" />
-    <meta property="og:title" content="Raíz Andina · Harinas y superalimentos naturales" />
-    <meta property="og:description" content="Cúrcuma, maca, quinua, cacao y más. Pide por WhatsApp." />
+    <meta property="og:title" content="Accesorios N&amp;D" />
+    <meta property="og:description" content="Tecnología, hogar, limpieza, bebidas y harinas. Pide por WhatsApp." />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og-image.png" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preconnect" href="https://images.unsplash.com" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   </head>
 
-  <body>
+  <body class="is-loading">
     <a class="skip-link" href="#catalogo">Saltar al catálogo</a>
 
-    <!-- Banda superior -->
     <a class="topband" data-wa href="#">
-      <span>Pide por WhatsApp · Envíos a todo Lima y provincias</span>
+      <span>Pide por WhatsApp al <span data-store-phone></span></span>
       <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
     </a>
 
-    <!-- Header -->
     <header class="header" id="header">
       <div class="container header__inner">
-        <a class="wordmark-sm" href="#" aria-label="Raíz Andina, inicio">raíz andina<span class="dot"></span></a>
-        <nav class="header__nav" aria-label="Principal">
-          <a href="#raices">Raíces</a>
-          <a href="#granos">Granos andinos</a>
-          <a href="#frutos">Frutos y semillas</a>
-          <a href="#como-pedir">Cómo pedir</a>
-        </nav>
+        <a class="logo" href="/" aria-label="Accesorios N&amp;D, inicio">
+          <img src="/logo.svg" alt="Accesorios N&amp;D" width="200" height="40" />
+        </a>
+        <nav class="header__nav" id="headerNav" aria-label="Principal"></nav>
         <button class="icon-btn" id="cartButton" type="button" aria-label="Ver pedido">
           <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" /><path d="M9 8V6a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
           <span class="icon-btn__badge" id="cartBadge" hidden>0</span>
@@ -45,13 +39,13 @@
     <main>
       <!-- 1. HERO: constelación de productos + marca + buscador -->
       <section class="hero" id="hero" aria-labelledby="hero-title">
-        <div class="constellation" id="constellation" aria-hidden="true">
+        <div class="constellation" aria-hidden="true">
           <div class="constellation__scene" id="constellationScene"></div>
         </div>
 
         <div class="container hero__body">
-          <h1 class="wordmark" id="hero-title">raíz andina<span class="dot"></span></h1>
-          <p class="hero__tagline">Harinas y superalimentos naturales del Perú.</p>
+          <h1 class="wordmark" id="hero-title">accesorios <span>N&amp;D</span></h1>
+          <p class="hero__tagline">Tecnología, hogar, limpieza, bebidas y harinas en un solo lugar.</p>
 
           <form class="search" id="searchForm" role="search">
             <label class="sr-only" for="searchInput">Buscar productos</label>
@@ -65,157 +59,113 @@
         </div>
       </section>
 
-      <!-- 2. CATÁLOGO: bandas por categoría (las llena src/sections/catalog.js) -->
+      <!-- 2. CATÁLOGO (lo arma src/sections/catalog.js con los datos de la base) -->
       <div id="catalogo" class="catalog">
-        <!-- Resultados de búsqueda / filtro -->
         <section class="band container" id="results" hidden aria-live="polite">
           <div class="band__head">
             <h2 class="band__title" id="resultsTitle">Resultados</h2>
             <button class="link-btn" type="button" id="clearFilter">Ver todo</button>
           </div>
           <div class="grid grid--4" id="resultsGrid"></div>
-          <p class="empty" id="resultsEmpty" hidden>No encontramos ese producto. <a data-wa href="#">Pregúntanos por WhatsApp</a>.</p>
+          <p class="empty" id="resultsEmpty" hidden>No encontramos ese producto. <a data-wa href="#">Pregúntanos por WhatsApp</a>, puede que lo tengamos.</p>
         </section>
 
-        <section class="band container" id="raices" data-band>
-          <div class="band__head"><h2 class="band__title">Raíces <span class="band__chev"></span></h2></div>
-          <div class="grid grid--4" data-grid="raices">
-            <figure class="tile tile--fill" data-reveal>
-              <img data-lifestyle="turmericRoot" alt="Raíz de cúrcuma y cúrcuma en polvo" loading="lazy" decoding="async" />
-              <figcaption class="tile__label"><strong>Raíces andinas</strong><span>Secadas y molidas en lotes pequeños</span></figcaption>
-            </figure>
+        <div id="bands">
+          <div class="container band">
+            <div class="grid grid--4 skeleton" aria-hidden="true">
+              <div></div><div></div><div></div><div></div>
+            </div>
           </div>
-        </section>
-
-        <section class="band container" id="granos" data-band>
-          <div class="band__head"><h2 class="band__title">Granos andinos <span class="band__chev"></span></h2></div>
-          <div class="split">
-            <figure class="tile tile--large" data-reveal>
-              <img data-lifestyle="flour" alt="Harina tamizada sobre un bol de cerámica" loading="lazy" decoding="async" />
-              <figcaption class="tile__label">
-                <strong>Harinas andinas</strong>
-                <span>Para panes, panqueques y repostería</span>
-              </figcaption>
-            </figure>
-            <div class="grid grid--2" data-grid="granos"></div>
-          </div>
-        </section>
-
-        <section class="band container" id="frutos" data-band>
-          <div class="band__head"><h2 class="band__title">Frutos y semillas <span class="band__chev"></span></h2></div>
-          <div class="rail" data-grid="frutos,semillas">
-            <figure class="tile tile--fill tile--dark" data-reveal>
-              <img data-lifestyle="cacao" alt="Cacao en polvo en un bol" loading="lazy" decoding="async" />
-              <figcaption class="tile__overlay"><strong>Cacao peruano</strong><span>100% puro, sin azúcar añadida</span></figcaption>
-            </figure>
-          </div>
-        </section>
+        </div>
       </div>
 
-      <!-- 3. IDEAS DE USO -->
-      <section class="band container" id="ideas" aria-labelledby="ideas-title">
-        <div class="band__head"><h2 class="band__title" id="ideas-title">Ideas para usarlas <span class="band__chev"></span></h2></div>
-        <div class="ideas">
-          <figure class="tile" data-reveal>
-            <img data-lifestyle="goldenMilk" alt="Vaso de golden milk con cúrcuma" loading="lazy" decoding="async" />
-            <figcaption class="tile__label"><strong>Golden milk</strong><span>Cúrcuma, leche y canela</span></figcaption>
-          </figure>
-          <figure class="tile" data-reveal style="--delay: 0.08s">
-            <img data-lifestyle="bowls" alt="Bowls de desayuno con frutas" loading="lazy" decoding="async" />
-            <figcaption class="tile__label"><strong>Bowls y batidos</strong><span>Maca, cacao o lúcuma</span></figcaption>
-          </figure>
-          <figure class="tile" data-reveal style="--delay: 0.16s">
-            <img data-lifestyle="pantry" alt="Cucharas con distintas harinas y polvos" loading="lazy" decoding="async" />
-            <figcaption class="tile__label"><strong>En tu despensa</strong><span>Una cucharada al día en tus comidas</span></figcaption>
-          </figure>
-        </div>
-      </section>
-
-      <!-- 4. CÓMO PEDIR -->
+      <!-- 3. CÓMO PEDIR -->
       <section class="band container" id="como-pedir" aria-labelledby="steps-title">
         <div class="band__head"><h2 class="band__title" id="steps-title">Cómo pedir</h2></div>
         <ol class="steps">
           <li class="step" data-reveal>
             <span class="step__num">1</span>
             <h3>Arma tu pedido</h3>
-            <p>Elige la presentación y toca <b>+</b> en cada producto.</p>
+            <p>Toca <b>+</b> en los productos que quieras llevar.</p>
           </li>
           <li class="step" data-reveal style="--delay: 0.08s">
             <span class="step__num">2</span>
             <h3>Envíalo por WhatsApp</h3>
-            <p>Te llega con el detalle listo. Confirmamos stock y costo de envío.</p>
+            <p>Te llega con el detalle listo. Confirmamos stock, precio y envío.</p>
           </li>
           <li class="step" data-reveal style="--delay: 0.16s">
             <span class="step__num">3</span>
             <h3>Paga y recibe</h3>
-            <p>Yape, Plin o transferencia. Despachamos el mismo día o al siguiente.</p>
+            <p>Yape, Plin o efectivo. Recojo en tienda o delivery.</p>
           </li>
         </ol>
       </section>
 
-      <!-- 5. PREGUNTAS FRECUENTES -->
+      <!-- 4. PREGUNTAS FRECUENTES -->
       <section class="band container band--narrow" id="faq" aria-labelledby="faq-title">
         <div class="band__head"><h2 class="band__title" id="faq-title">Preguntas frecuentes</h2></div>
         <div class="faq">
           <details>
-            <summary>¿Hacen envíos a provincias?</summary>
-            <p>Sí, enviamos por agencia (Shalom, Olva u otra que prefieras). El costo depende del destino.</p>
+            <summary>¿Las fotos son de los productos reales?</summary>
+            <p>Las imágenes son referenciales. Si quieres ver el producto exacto, color o modelo, pídenos una foto por WhatsApp.</p>
           </details>
           <details>
-            <summary>¿Cuánto duran los productos?</summary>
-            <p>Entre 6 y 12 meses cerrados, según el producto. Una vez abiertos, guárdalos en un lugar fresco y seco.</p>
+            <summary>¿Por qué algunos productos dicen “Consultar precio”?</summary>
+            <p>Algunos productos tienen varias marcas, tamaños o modelos. Agrégalos a tu pedido y te confirmamos el precio por WhatsApp.</p>
           </details>
           <details>
-            <summary>¿Venden por mayor?</summary>
-            <p>Sí. Escríbenos por WhatsApp indicando cantidades y te enviamos una cotización.</p>
+            <summary>¿Hacen delivery?</summary>
+            <p>Sí. Escríbenos tu distrito por WhatsApp y te indicamos el costo y el tiempo de entrega.</p>
           </details>
           <details>
             <summary>¿Qué medios de pago aceptan?</summary>
-            <p>Yape, Plin y transferencia bancaria.</p>
+            <p>Yape, Plin y efectivo.</p>
+          </details>
+          <details>
+            <summary>¿Venden por mayor?</summary>
+            <p>Sí. Escríbenos indicando producto y cantidad, y te enviamos una cotización.</p>
           </details>
         </div>
       </section>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
       <div class="container footer__grid">
         <div>
-          <a class="wordmark-sm wordmark-sm--light" href="#">raíz andina<span class="dot"></span></a>
-          <p class="footer__muted">Harinas y superalimentos naturales del Perú.</p>
+          <img src="/logo-blanco.svg" alt="Accesorios N&amp;D" width="200" height="40" class="footer__logo" />
+          <p class="footer__muted">Accesorios para celular, computadora y hogar, artículos de limpieza y más.</p>
         </div>
-        <nav aria-label="Tienda">
-          <h3>Tienda</h3>
-          <a href="#raices">Raíces</a>
-          <a href="#granos">Granos andinos</a>
-          <a href="#frutos">Frutos y semillas</a>
-        </nav>
+        <nav aria-label="Tienda" id="footerCategories"><h3>Tienda</h3></nav>
         <nav aria-label="Ayuda">
           <h3>Ayuda</h3>
           <a href="#como-pedir">Cómo pedir</a>
           <a href="#faq">Preguntas frecuentes</a>
           <a data-wa href="#">WhatsApp</a>
+          <a href="/libro-de-reclamaciones.html" class="footer__book">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2V5z M8 7h7M8 11h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            Libro de Reclamaciones
+          </a>
         </nav>
-        <nav aria-label="Contacto">
-          <h3>Contacto</h3>
-          <a href="mailto:contacto@ejemplo.com" data-store-email>contacto@ejemplo.com</a>
+        <nav aria-label="Legal">
+          <h3>Legal</h3>
+          <a href="/terminos.html">Términos y condiciones</a>
+          <a href="/privacidad.html">Política de privacidad</a>
+          <a href="#" data-store-email></a>
           <a href="#" data-store-instagram>Instagram</a>
         </nav>
       </div>
       <div class="container footer__legal">
-        <span>© <span id="year"></span> Raíz Andina</span>
-        <span>Lima, Perú</span>
+        <span>© <span data-year></span> Accesorios N&amp;D</span>
+        <span>Imágenes referenciales</span>
       </div>
     </footer>
 
-    <!-- Barra flotante del pedido -->
     <button class="order-bar" id="orderBar" type="button" aria-label="Ver pedido" hidden>
       <span class="order-bar__count" id="orderBarCount">0</span>
-      <span class="order-bar__text"><strong>Ver pedido</strong><span id="orderBarTotal">S/ 0.00</span></span>
+      <span class="order-bar__text"><strong>Ver pedido</strong><span id="orderBarTotal"></span></span>
       <span class="order-bar__cta">Continuar</span>
     </button>
 
-    <!-- Panel del pedido -->
     <div class="drawer" id="drawer" hidden>
       <div class="drawer__backdrop" data-close></div>
       <aside class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
@@ -228,8 +178,8 @@
         <ul class="drawer__lines" id="drawerLines"></ul>
         <p class="drawer__empty" id="drawerEmpty">Aún no agregas productos.</p>
         <footer class="drawer__foot">
-          <div class="drawer__total"><span>Subtotal</span><strong id="drawerSubtotal">S/ 0.00</strong></div>
-          <p class="drawer__note">El costo de envío se confirma por WhatsApp.</p>
+          <div class="drawer__total"><span>Subtotal</span><strong id="drawerSubtotal">—</strong></div>
+          <p class="drawer__note" id="drawerNote"></p>
           <button class="btn btn--accent btn--block" type="button" id="sendOrder">Enviar pedido por WhatsApp</button>
         </footer>
       </aside>

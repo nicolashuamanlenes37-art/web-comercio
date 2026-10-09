@@ -1,41 +1,61 @@
 import { $, $$, esc, normalize } from '../lib/dom.js';
 import { reveal } from '../lib/motion.js';
-import { PRODUCTS, LIFESTYLE, categoryById, productById } from '../data/products.js';
-import { productCard, selectedSize } from '../components/productCard.js';
+import { plural } from '../lib/format.js';
+import { productCard } from '../components/productCard.js';
 import { cart } from '../store/cart.js';
 
+let data = { categories: [], products: [] };
 const filter = { query: '', category: '' };
+
+const productsOf = (catId) => data.products.filter((p) => p.categoryId === catId);
+const productById = (id) => data.products.find((p) => p.id === id);
 
 /* ---------- Render ---------- */
 
+/** Una banda por categoría: foto de portada (si tiene) + productos. */
+function bandHTML(cat, items = productsOf(cat.id)) {
+  if (!items.length) return '';
+  const cover = cat.cover
+    ? `<figure class="tile tile--fill tile--dark" data-reveal>
+         <img src="${esc(cat.cover)}" alt="" loading="lazy" decoding="async" />
+         <figcaption class="tile__overlay">
+           <strong>${esc(cat.name)}</strong>
+           <span>${esc(cat.tagline || plural(items.length, 'producto', 'productos'))}</span>
+         </figcaption>
+       </figure>`
+    : '';
+  return `
+  <section class="band container" id="${esc(cat.slug)}" data-band>
+    <div class="band__head">
+      <h2 class="band__title">${esc(cat.name)} <span class="band__chev"></span></h2>
+      <span class="band__count">${plural(items.length, 'producto', 'productos')}</span>
+    </div>
+    <div class="grid grid--4">
+      ${cover}
+      ${items.map((p, i) => productCard(p, { delay: ((i + 1) % 4) * 0.06 })).join('')}
+    </div>
+  </section>`;
+}
+
 function renderBands() {
-  $$('[data-grid]').forEach((grid) => {
-    const cats = grid.dataset.grid.split(',');
-    const cards = PRODUCTS.filter((p) => cats.includes(p.category))
-      .map((p, i) => productCard(p, { delay: (i + 1) * 0.06 }))
-      .join('');
-    grid.insertAdjacentHTML('beforeend', cards); // conserva la foto de la banda
-  });
-  $$('[data-lifestyle]').forEach((img) => {
-    img.src = LIFESTYLE[img.dataset.lifestyle];
-  });
-  // Cada producto tiene un ancla para los enlaces del hero
-  $$('[data-band] .product').forEach((el) => (el.id = `p-${el.dataset.product}`));
+  const known = new Set(data.categories.map((c) => c.id));
+  const orphans = data.products.filter((p) => !known.has(p.categoryId));
+  $('#bands').innerHTML =
+    data.categories.map((c) => bandHTML(c)).join('') +
+    bandHTML({ slug: 'otros', name: 'Otros productos', cover: '' }, orphans);
+  reveal($('#bands'));
 }
 
 function renderResults() {
   const q = normalize(filter.query);
-  const list = PRODUCTS.filter(
+  const list = data.products.filter(
     (p) =>
-      (!filter.category || p.category === filter.category) &&
+      (!filter.category || p.categoryId === filter.category) &&
       (!q || normalize(`${p.name} ${p.description}`).includes(q)),
   );
-  const title = filter.category
-    ? categoryById(filter.category).name
-    : `Resultados para “${esc(filter.query)}”`;
-
-  $('#resultsTitle').innerHTML = title;
-  $('#resultsGrid').innerHTML = list.map((p, i) => productCard(p, { delay: i * 0.04 })).join('');
+  const cat = data.categories.find((c) => c.id === filter.category);
+  $('#resultsTitle').textContent = cat ? cat.name : `Resultados para “${filter.query}”`;
+  $('#resultsGrid').innerHTML = list.map((p, i) => productCard(p, { delay: (i % 8) * 0.04 })).join('');
   $('#resultsEmpty').hidden = list.length > 0;
   reveal($('#results'));
 }
@@ -46,9 +66,8 @@ export function setFilter({ query = '', category = '' }, { scroll = false } = {}
   filter.query = query;
   filter.category = category;
   const active = Boolean(query || category);
-
   $('#results').hidden = !active;
-  $$('[data-band]').forEach((band) => (band.hidden = active));
+  $('#bands').hidden = active;
   if (active) renderResults();
   if (scroll) $('#catalogo').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -63,45 +82,29 @@ export function scrollToProduct(id) {
   el.classList.add('is-highlight');
 }
 
-/* ---------- Interacción en las tarjetas ---------- */
+/* ---------- Interacción ---------- */
 
-/** Vuelve a pintar todas las copias de un producto (puede estar en banda y en resultados). */
 function refreshProduct(id) {
   const p = productById(id);
-  $$(`.product[data-product="${id}"]`).forEach((old) => {
+  if (!p) return;
+  $$(`.product[data-product="${CSS.escape(id)}"]`).forEach((old) => {
     const tmp = document.createElement('div');
     tmp.innerHTML = productCard(p, { reveal: false });
-    const card = tmp.firstElementChild;
-    card.id = old.id;
-    old.replaceWith(card);
+    old.replaceWith(tmp.firstElementChild);
   });
 }
 
-function bindCards() {
+function bindEvents() {
   $('#catalogo').addEventListener('click', (e) => {
     const card = e.target.closest('.product');
-    if (!card) return;
+    if (!card || !e.target.closest('[data-add]')) return;
     const id = card.dataset.product;
-
-    const sizeBtn = e.target.closest('[data-size]');
-    if (sizeBtn) {
-      selectedSize.set(id, Number(sizeBtn.dataset.size));
-      refreshProduct(id);
-      return;
-    }
-
-    if (e.target.closest('[data-add]')) {
-      const p = productById(id);
-      const size = p.sizes[selectedSize.get(id) ?? 0];
-      cart.add(id, size.grams);
-      const btn = $(`.product[data-product="${id}"] [data-add]`);
-      btn?.classList.add('is-pop');
-    }
+    cart.add(id);
+    $(`.product[data-product="${CSS.escape(id)}"] [data-add]`)?.classList.add('is-pop');
   });
 
   cart.onChange((ev) => {
     if (ev.productId) refreshProduct(ev.productId);
-    else PRODUCTS.forEach((p) => refreshProduct(p.id));
   });
 
   $('#clearFilter').addEventListener('click', () => {
@@ -110,8 +113,9 @@ function bindCards() {
   });
 }
 
-export function initCatalog() {
+export function initCatalog(catalog) {
+  data = catalog;
+  cart.setCatalog(catalog.products);
   renderBands();
-  bindCards();
-  reveal();
+  bindEvents();
 }

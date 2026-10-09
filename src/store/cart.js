@@ -1,43 +1,41 @@
-import { productById } from '../data/products.js';
-
 /**
- * Estado del pedido. Clave: "productoId|gramos" → cantidad.
+ * Estado del pedido: productoId → cantidad.
  * Los módulos se suscriben con onChange() y reaccionan a cada cambio.
  */
 const items = new Map();
 const listeners = new Set();
+let catalog = new Map();
 
 const notify = (event) => listeners.forEach((fn) => fn(event));
 
 export const cart = {
-  add(productId, grams, qty = 1) {
-    const key = `${productId}|${grams}`;
-    items.set(key, (items.get(key) || 0) + qty);
-    notify({ type: 'add', productId, grams });
+  /** Registra los productos cargados para poder armar las líneas del pedido. */
+  setCatalog(products) {
+    catalog = new Map(products.map((p) => [p.id, p]));
   },
 
-  set(key, qty) {
-    if (qty <= 0) items.delete(key);
-    else items.set(key, qty);
-    notify({ type: 'set', key });
+  add(productId, qty = 1) {
+    items.set(productId, (items.get(productId) || 0) + qty);
+    notify({ type: 'add', productId });
   },
 
-  clear() {
-    items.clear();
-    notify({ type: 'clear' });
+  set(productId, qty) {
+    if (qty <= 0) items.delete(productId);
+    else items.set(productId, qty);
+    notify({ type: 'set', productId });
   },
 
-  qty(productId, grams) {
-    return items.get(`${productId}|${grams}`) || 0;
+  qty(productId) {
+    return items.get(productId) || 0;
   },
 
   lines() {
-    return [...items].map(([key, qty]) => {
-      const [id, grams] = key.split('|');
-      const product = productById(id);
-      const size = product.sizes.find((s) => s.grams === Number(grams));
-      return { key, product, size, qty, total: size.price * qty };
-    });
+    return [...items]
+      .filter(([id]) => catalog.has(id))
+      .map(([id, qty]) => {
+        const product = catalog.get(id);
+        return { product, qty, total: product.price === null ? null : product.price * qty };
+      });
   },
 
   count() {
@@ -46,8 +44,14 @@ export const cart = {
     return n;
   },
 
+  /** Suma de los productos con precio. */
   subtotal() {
-    return this.lines().reduce((sum, l) => sum + l.total, 0);
+    return this.lines().reduce((sum, l) => sum + (l.total ?? 0), 0);
+  },
+
+  /** true si algún producto del pedido no tiene precio publicado. */
+  hasUnpriced() {
+    return this.lines().some((l) => l.total === null);
   },
 
   onChange(fn) {

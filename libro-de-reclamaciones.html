@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Libro de Reclamaciones · Accesorios N&amp;D</title>
+    <meta name="description" content="Libro de Reclamaciones virtual de Accesorios N&D." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="legal-bar">
+      <div class="container">
+        <a href="/" aria-label="Ir a la tienda"><img src="/logo.svg" alt="Accesorios N&amp;D" width="200" height="40" /></a>
+        <a class="back" href="/">← Volver a la tienda</a>
+      </div>
+    </header>
+
+    <main class="container doc">
+      <article class="doc__card">
+        <h1>Libro de Reclamaciones</h1>
+        <p class="updated">Fecha: <span id="claimDate"></span></p>
+        <div class="provider">
+          <strong>Accesorios N&amp;D</strong>
+          <span data-legal="owner"></span>
+          <span data-legal="document"></span>
+          <span data-legal="address"></span>
+        </div>
+
+        <form class="claim" id="claimForm" novalidate>
+          <fieldset>
+            <legend>1. Tus datos</legend>
+            <label class="field"><span>Nombres y apellidos *</span><input name="full_name" required minlength="3" maxlength="120" autocomplete="name" /></label>
+            <div class="two">
+              <label class="field"><span>DNI / CE *</span><input name="document" required minlength="6" maxlength="20" inputmode="numeric" /></label>
+              <label class="field"><span>Teléfono</span><input name="phone" maxlength="20" inputmode="tel" autocomplete="tel" /></label>
+            </div>
+            <label class="field"><span>Correo electrónico *</span><input name="email" type="email" required maxlength="120" autocomplete="email" /></label>
+            <label class="field"><span>Domicilio</span><input name="address" maxlength="200" autocomplete="street-address" /></label>
+            <label class="field"><span>Si eres menor de edad: nombre de tu padre, madre o apoderado</span><input name="guardian" maxlength="120" /></label>
+          </fieldset>
+
+          <fieldset>
+            <legend>2. Producto o servicio</legend>
+            <div class="two">
+              <label class="field"><span>Producto o servicio</span><input name="item" maxlength="200" /></label>
+              <label class="field"><span>Monto reclamado (S/)</span><input name="amount" type="number" min="0" step="0.01" inputmode="decimal" /></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>3. Detalle</legend>
+            <div class="kind" role="radiogroup" aria-label="Tipo">
+              <label><input type="radio" name="kind" value="reclamo" required checked /><span>Reclamo<small>Disconformidad con un producto o servicio.</small></span></label>
+              <label><input type="radio" name="kind" value="queja" /><span>Queja<small>Malestar con la atención, no con el producto.</small></span></label>
+            </div>
+            <label class="field"><span>¿Qué pasó? *</span><textarea name="detail" rows="5" required minlength="10" maxlength="2000"></textarea></label>
+            <label class="field"><span>¿Qué solicitas? *</span><textarea name="request" rows="3" required minlength="5" maxlength="1000"></textarea></label>
+          </fieldset>
+
+          <label class="check"><input type="checkbox" required /><span>Declaro que los datos son verdaderos y acepto la <a href="/privacidad.html">política de privacidad</a>.</span></label>
+
+          <p class="note">La formulación del reclamo no impide acudir a otras vías de solución de controversias ni es requisito previo para interponer una denuncia ante el INDECOPI. El proveedor deberá responder en un plazo no mayor a quince (15) días hábiles.</p>
+          <p class="form-error" id="claimError" hidden></p>
+          <button class="btn btn--accent btn--block" type="submit">Enviar</button>
+        </form>
+
+        <div class="success" id="claimDone" hidden>
+          <span>Tu registro fue enviado. Guarda este código:</span>
+          <strong id="claimCode"></strong>
+          <span>Te responderemos al correo que indicaste.</span>
+        </div>
+      </article>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer__grid">
+        <div>
+          <img src="/logo-blanco.svg" alt="Accesorios N&amp;D" width="200" height="40" class="footer__logo" />
+          <p class="footer__muted">Accesorios para celular, computadora y hogar, artículos de limpieza y más.</p>
+        </div>
+        <nav aria-label="Legal">
+          <h3>Legal</h3>
+          <a href="/terminos.html">Términos y condiciones</a>
+          <a href="/privacidad.html">Política de privacidad</a>
+          <a href="/libro-de-reclamaciones.html">Libro de Reclamaciones</a>
+        </nav>
+        <nav aria-label="Contacto">
+          <h3>Contacto</h3>
+          <a data-wa href="#">WhatsApp <span data-store-phone></span></a>
+          <a href="#" data-store-email></a>
+        </nav>
+      </div>
+      <div class="container footer__legal">
+        <span>© <span data-year></span> Accesorios N&amp;D</span>
+        <span>Lima, Perú</span>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/legal.js"></script>
+  </body>
+</html>

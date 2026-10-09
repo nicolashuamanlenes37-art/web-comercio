@@ -1,18 +1,25 @@
-import { $ } from '../lib/dom.js';
-import { CATEGORIES, productById } from '../data/products.js';
+import { $, esc } from '../lib/dom.js';
 import { floatCard } from '../components/productCard.js';
 import { prefersReducedMotion, hasFinePointer, lerp, clamp } from '../lib/motion.js';
 import { setFilter, scrollToProduct } from './catalog.js';
 
-/** Orden de las tarjetas flotantes (posiciones en hero.css → .float-slot--N). */
-const CONSTELLATION = ['curcuma', 'maca', 'cacao', 'quinua', 'linaza', 'jengibre', 'lucuma'];
+const SLOTS = 7; // posiciones definidas en hero.css → .float-slot--N
 
-function renderConstellation() {
-  $('#constellationScene').innerHTML = CONSTELLATION.map(
-    (id, i) => `<div class="float-slot float-slot--${i + 1}"><div class="float-slot__in">${floatCard(productById(id))}</div></div>`,
-  ).join('');
+/** Destacados primero; si no alcanzan, se completa con otros productos con foto. */
+function pickConstellation(products) {
+  const withImage = products.filter((p) => p.image);
+  const featured = withImage.filter((p) => p.featured);
+  const rest = withImage.filter((p) => !p.featured);
+  return [...featured, ...rest].slice(0, SLOTS);
+}
 
-  $('#constellationScene').addEventListener('click', (e) => {
+function renderConstellation(products) {
+  const scene = $('#constellationScene');
+  scene.innerHTML = pickConstellation(products)
+    .map((p, i) => `<div class="float-slot float-slot--${i + 1}"><div class="float-slot__in">${floatCard(p)}</div></div>`)
+    .join('');
+
+  scene.addEventListener('click', (e) => {
     const link = e.target.closest('[data-jump]');
     if (!link) return;
     e.preventDefault();
@@ -31,10 +38,9 @@ function bindParallax() {
   const frame = () => {
     current.x = lerp(current.x, target.x, 0.07);
     current.y = lerp(current.y, target.y, 0.07);
-    const progress = clamp(scrollY / hero.offsetHeight);
     hero.style.setProperty('--mx', current.x.toFixed(4));
     hero.style.setProperty('--my', current.y.toFixed(4));
-    hero.style.setProperty('--scroll', progress.toFixed(4));
+    hero.style.setProperty('--scroll', clamp(scrollY / hero.offsetHeight).toFixed(4));
     const settling = Math.abs(current.x - target.x) + Math.abs(current.y - target.y) > 0.001;
     if (settling) requestAnimationFrame(frame);
     else ticking = false;
@@ -60,23 +66,32 @@ function bindParallax() {
   addEventListener('scroll', () => scrollY < hero.offsetHeight * 1.2 && kick(), { passive: true });
 }
 
-function renderPills() {
+function setActivePill(btn) {
+  document.querySelectorAll('#categoryPills .pill').forEach((p) => {
+    const on = p === btn;
+    p.classList.toggle('is-active', on);
+    p.setAttribute('aria-pressed', on);
+  });
+}
+
+function renderPills(categories, products) {
   const pills = $('#categoryPills');
+  const thumbOf = (cat) => cat.cover || products.find((p) => p.categoryId === cat.id && p.image)?.image || '';
   pills.innerHTML =
     `<button class="pill is-active" type="button" data-category="" aria-pressed="true">Todo</button>` +
-    CATEGORIES.map(
-      (c) => `<button class="pill" type="button" data-category="${c.id}" aria-pressed="false">
-        <span class="pill__swatch" style="background:${c.color}"></span>${c.name}</button>`,
-    ).join('');
+    categories
+      .filter((c) => products.some((p) => p.categoryId === c.id))
+      .map((c) => {
+        const thumb = thumbOf(c);
+        return `<button class="pill" type="button" data-category="${esc(c.id)}" aria-pressed="false">
+          ${thumb ? `<img class="pill__thumb" src="${esc(thumb)}" alt="" width="28" height="28" loading="lazy" />` : ''}${esc(c.name)}</button>`;
+      })
+      .join('');
 
   pills.addEventListener('click', (e) => {
     const btn = e.target.closest('.pill');
     if (!btn) return;
-    pills.querySelectorAll('.pill').forEach((p) => {
-      const on = p === btn;
-      p.classList.toggle('is-active', on);
-      p.setAttribute('aria-pressed', on);
-    });
+    setActivePill(btn);
     $('#searchInput').value = '';
     setFilter({ category: btn.dataset.category, query: '' }, { scroll: true });
   });
@@ -84,26 +99,20 @@ function renderPills() {
 
 function bindSearch() {
   const input = $('#searchInput');
-  const resetPills = () =>
-    document.querySelectorAll('#categoryPills .pill').forEach((p, i) => {
-      p.classList.toggle('is-active', i === 0);
-      p.setAttribute('aria-pressed', i === 0);
-    });
-
   $('#searchForm').addEventListener('submit', (e) => {
     e.preventDefault();
     input.blur();
-    resetPills();
+    setActivePill($('#categoryPills .pill'));
     setFilter({ query: input.value.trim(), category: '' }, { scroll: true });
   });
   input.addEventListener('input', () => {
-    if (input.value.trim() === '') setFilter({ query: '', category: '' });
+    if (input.value.trim() === '') setFilter({});
   });
 }
 
-export function initHero() {
-  renderConstellation();
-  renderPills();
+export function initHero({ categories, products }) {
+  renderConstellation(products);
+  renderPills(categories, products);
   bindSearch();
   bindParallax();
 }

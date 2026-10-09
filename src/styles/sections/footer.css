@@ -35,6 +35,15 @@
 .footer nav a:hover {
   text-decoration: underline;
 }
+.footer__logo {
+  width: auto;
+  height: 34px;
+}
+.footer__book {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
 .footer__muted {
   margin-top: var(--space-2);
   color: rgba(255, 255, 255, 0.55);

@@ -97,18 +97,18 @@
   text-align: center;
 }
 .wordmark {
-  font-size: clamp(56px, 15.5vw, 168px);
+  font-size: clamp(44px, 12vw, 136px);
   font-weight: 600;
-  line-height: 0.9;
-  letter-spacing: -0.075em;
-  color: var(--color-accent);
+  line-height: 0.95;
+  letter-spacing: -0.07em;
+  color: var(--color-ink);
+  white-space: nowrap;
   opacity: 0;
   animation: fadeUp 0.9s var(--ease-out) 0.2s forwards;
 }
-.wordmark .dot {
-  width: 0.14em;
-  height: 0.14em;
-  background: var(--color-ink);
+.wordmark span {
+  color: var(--color-accent);
+  font-weight: 700;
 }
 .hero__tagline {
   margin-top: var(--space-4);
