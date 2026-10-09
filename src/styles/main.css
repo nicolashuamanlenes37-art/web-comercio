@@ -8,6 +8,7 @@
 @import './components/product-card.css';
 @import './components/tile.css';
 @import './components/drawer.css';
+@import './components/wa-fab.css';
 
 @import './sections/header.css';
 @import './sections/hero.css';

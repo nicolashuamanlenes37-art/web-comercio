@@ -17,6 +17,7 @@ function render() {
   badge.textContent = count;
 
   $('#orderBar').hidden = count === 0;
+  document.body.classList.toggle('has-order', count > 0);
   $('#orderBarCount').textContent = count;
   $('#orderBarTotal').textContent =
     subtotal > 0 ? `${plural(count, 'producto', 'productos')} · ${money(subtotal)}` : plural(count, 'producto', 'productos');
