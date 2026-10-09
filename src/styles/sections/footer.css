@@ -39,6 +39,8 @@
   width: auto;
   height: 34px;
   -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  touch-action: manipulation;
   -webkit-user-select: none;
   user-select: none;
 }
