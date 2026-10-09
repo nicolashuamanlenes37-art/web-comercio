@@ -38,6 +38,9 @@
 .footer__logo {
   width: auto;
   height: 34px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 .footer__book {
   display: inline-flex !important;
