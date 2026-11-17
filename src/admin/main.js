@@ -3,11 +3,12 @@ import '../styles/admin.css';
 import { $, $$ } from '../lib/dom.js';
 import { supabase } from '../lib/supabase.js';
 import { initSheet, toast, showError, busy } from './ui.js';
+import { initImageLoading } from '../lib/img-loading.js';
 import { fetchProducts, renderProducts, renderCategoryFilter, initProducts } from './products.js';
 import { fetchCategories, renderCategories, initCategories } from './categories.js';
 import { fetchComplaints, renderComplaints, initComplaints } from './complaints.js';
 
-const VIEWS = ['viewOffline', 'viewLogin', 'viewRecovery', 'viewDenied', 'viewApp'];
+const VIEWS = ['viewBoot', 'viewOffline', 'viewLogin', 'viewRecovery', 'viewDenied', 'viewApp'];
 const show = (id) => VIEWS.forEach((v) => ($(`#${v}`).hidden = v !== id));
 
 /* ---------- Pestañas ---------- */
@@ -137,6 +138,7 @@ function initAuth() {
 if (!supabase) {
   show('viewOffline');
 } else {
+  initImageLoading('.row__img');
   initSheet();
   initTabs();
   initProducts();

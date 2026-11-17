@@ -32,6 +32,7 @@ export function renderComplaints() {
   badge.hidden = pending === 0;
   badge.textContent = pending;
 
+  $('#complaintRows').removeAttribute('aria-busy');
   $('#complaintRows').innerHTML = state.complaints.length
     ? state.complaints
         .map((c) => {

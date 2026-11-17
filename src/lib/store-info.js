@@ -1,5 +1,6 @@
 import { STORE } from '../config.js';
 import { bindWhatsAppLinks } from './whatsapp.js';
+import { trackWhatsAppClicks } from './analytics.js';
 
 const prettyPhone = (n) => n.replace(/^51/, '').replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
 
@@ -15,7 +16,14 @@ export function initStoreInfo(root = document) {
   root.querySelectorAll('[data-store-instagram]').forEach((a) => {
     if (!STORE.instagram) return a.remove();
     a.href = STORE.instagram;
+    a.target = '_blank';
+    a.rel = 'noopener';
+  });
+  root.querySelectorAll('[data-store-hours]').forEach((el) => {
+    if (!STORE.hours) return el.remove();
+    el.textContent = `Horario: ${STORE.hours}`;
   });
   root.querySelectorAll('[data-legal]').forEach((el) => (el.textContent = STORE.legal[el.dataset.legal] || ''));
   bindWhatsAppLinks(root);
+  trackWhatsAppClicks(root);
 }

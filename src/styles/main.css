@@ -9,6 +9,7 @@
 @import './components/tile.css';
 @import './components/drawer.css';
 @import './components/wa-fab.css';
+@import './components/skeleton.css';
 
 @import './sections/header.css';
 @import './sections/hero.css';

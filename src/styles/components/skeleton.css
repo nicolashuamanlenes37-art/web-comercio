@@ -1,0 +1,73 @@
+/*
+ * Esqueletos de carga ("hueso"): formas grises con un brillo que pasa,
+ * con el mismo tamaño que el contenido real para que nada salte al cargar.
+ */
+.sk {
+  display: block;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #e9ecee 0%, #f6f7f8 50%, #e9ecee 100%) 0 0 / 200% 100%;
+  animation: sk-shimmer 1.4s linear infinite;
+}
+@keyframes sk-shimmer {
+  to { background-position: -200% 0; }
+}
+.sk--line { height: 12px; }
+.sk--title { height: 20px; width: 40%; border-radius: 10px; }
+.sk--circle { border-radius: 50%; }
+.sk--pill { height: 40px; border-radius: var(--radius-pill); }
+
+/* Tarjeta de producto fantasma (misma caja que .product) */
+.sk-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-2);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+.sk-card__media {
+  aspect-ratio: 1;
+  border-radius: var(--radius-media);
+}
+.sk-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: var(--space-3) var(--space-2) var(--space-1);
+}
+.sk-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-2);
+}
+
+/* Foto que todavía está bajando: brillo en su lugar hasta que llegue */
+.img-wait,
+img.img-wait {
+  background: linear-gradient(90deg, #eef0f2 0%, #f8f9fa 50%, #eef0f2 100%) 0 0 / 200% 100%;
+  animation: sk-shimmer 1.4s linear infinite;
+}
+.img-wait > img {
+  opacity: 0;
+}
+.img-ready > img {
+  transition: opacity 0.35s ease, transform 0.6s var(--ease-out);
+}
+
+.sk-row .row__main {
+  cursor: default;
+}
+.sk-row .row__text {
+  flex: 1;
+  gap: 8px;
+}
+.sk-tabs > .sk {
+  flex: 1;
+  height: 36px;
+  border-radius: var(--radius-pill);
+}
+
+.category-pills > .sk {
+  flex: none;
+}

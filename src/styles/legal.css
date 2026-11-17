@@ -202,3 +202,34 @@
   font-size: var(--text-xl);
   letter-spacing: var(--tracking-lg);
 }
+
+/* Página 404 */
+.notfound {
+  text-align: center;
+}
+.doc .notfound__code {
+  margin: 0 0 var(--space-2);
+  color: var(--color-accent);
+  font-size: clamp(4rem, 18vw, 7rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.doc .notfound__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+.notfound .btn {
+  text-decoration: none;
+}
+.notfound .btn--accent {
+  color: var(--color-accent-ink);
+}
+.notfound .btn--ghost {
+  border-color: var(--color-border);
+  background: #fff;
+  color: var(--color-ink);
+}

@@ -4,6 +4,7 @@
 @import './base.css';
 @import './components/button.css';
 @import './components/drawer.css';
+@import './components/skeleton.css';
 
 body {
   background: var(--color-canvas);

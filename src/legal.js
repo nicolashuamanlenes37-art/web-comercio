@@ -3,6 +3,7 @@ import './styles/legal.css';
 import { $ } from './lib/dom.js';
 import { initStoreInfo } from './lib/store-info.js';
 import { restEnabled, restInsert } from './lib/rest.js';
+import { track } from './lib/analytics.js';
 
 initStoreInfo();
 
@@ -59,6 +60,7 @@ if (form) {
     btn.textContent = 'Enviando…';
     try {
       await restInsert('complaints', row);
+      track('reclamo_enviado', { tipo: row.kind });
       form.hidden = true;
       $('#claimCode').textContent = code;
       $('#claimDone').hidden = false;

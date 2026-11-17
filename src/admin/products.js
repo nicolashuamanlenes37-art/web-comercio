@@ -30,6 +30,7 @@ export function renderProducts() {
     (p) => (!cat || p.category_id === cat || (cat === 'none' && !p.category_id)) && (!q || normalize(p.name).includes(q)),
   );
 
+  $('#productRows').removeAttribute('aria-busy');
   $('#productRows').innerHTML = list.length
     ? list
         .map(

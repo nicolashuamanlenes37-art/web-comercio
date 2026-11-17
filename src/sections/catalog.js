@@ -40,6 +40,7 @@ function bandHTML(cat, items = productsOf(cat.id)) {
 function renderBands() {
   const known = new Set(data.categories.map((c) => c.id));
   const orphans = data.products.filter((p) => !known.has(p.categoryId));
+  $('#bands').removeAttribute('aria-busy');
   $('#bands').innerHTML =
     data.categories.map((c) => bandHTML(c)).join('') +
     bandHTML({ slug: 'otros', name: 'Otros productos', cover: '' }, orphans);

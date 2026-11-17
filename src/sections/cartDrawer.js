@@ -3,6 +3,7 @@ import { money, priceLabel, plural } from '../lib/format.js';
 import { waLink, orderMessage } from '../lib/whatsapp.js';
 import { PLACEHOLDER } from '../components/productCard.js';
 import { cart } from '../store/cart.js';
+import { track } from '../lib/analytics.js';
 
 let lastFocus = null;
 
@@ -90,6 +91,11 @@ export function initCartDrawer() {
 
   $('#sendOrder').addEventListener('click', () => {
     const msg = orderMessage(cart.lines(), cart.subtotal(), cart.hasUnpriced());
+    track('whatsapp_order', {
+      items: cart.lines().reduce((n, l) => n + l.qty, 0),
+      value: cart.subtotal(),
+      currency: 'PEN',
+    });
     window.open(waLink(msg), '_blank', 'noopener');
   });
 

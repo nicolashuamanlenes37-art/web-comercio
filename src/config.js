@@ -11,6 +11,10 @@ export const STORE = {
   email: '',
   instagram: '',
   city: 'Lima, Perú',
+  // Horario de atención. Ej.: 'Lunes a sábado, 9:00 a 19:00'. Vacío = no se muestra.
+  hours: '',
+  // El mismo horario para Google (formato schema.org). Ej.: ['Mo-Sa 09:00-19:00']
+  openingHours: [],
 
   // Datos del proveedor para el Libro de Reclamaciones y las páginas legales.
   legal: {
@@ -20,9 +24,25 @@ export const STORE = {
   },
 };
 
+/**
+ * Datos para Google y analítica.
+ * Al comprar el dominio, solo hay que cambiar `url` aquí y volver a desplegar:
+ * se actualizan la URL canónica, la vista previa al compartir, el sitemap y robots.txt.
+ */
+export const SITE = {
+  url: 'https://accesoriosnyd.pages.dev',
+  // ID de Google Analytics 4 (G-XXXXXXXXXX). Vacío = sin analítica.
+  gaId: '',
+  // Código de Google Search Console (método "Etiqueta HTML", solo el valor de content).
+  googleVerification: '',
+};
+
+// En el navegador Vite reemplaza import.meta.env; en vite.config (Node) no existe.
+const env = import.meta.env || {};
+
 /** Conexión a Supabase (se configura con variables de entorno, ver .env.example). */
 export const SUPABASE = {
-  url: import.meta.env.VITE_SUPABASE_URL || '',
-  key: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '',
+  url: env.VITE_SUPABASE_URL || '',
+  key: env.VITE_SUPABASE_PUBLISHABLE_KEY || '',
   bucket: 'productos',
 };

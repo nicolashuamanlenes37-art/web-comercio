@@ -24,6 +24,7 @@ function slugify(name, ignoreId) {
 const countOf = (id) => state.products.filter((p) => p.category_id === id).length;
 
 export function renderCategories() {
+  $('#categoryRows').removeAttribute('aria-busy');
   $('#categoryRows').innerHTML = state.categories.length
     ? state.categories
         .map(
