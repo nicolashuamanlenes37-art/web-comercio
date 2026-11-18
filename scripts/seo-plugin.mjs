@@ -34,6 +34,35 @@ const fillTokens = (html) => {
   return html.replace(/%([A-Z_]+)%/g, (match, key) => (key in values ? escHtml(values[key]) : match));
 };
 
+/**
+ * Vista previa al compartir el enlace (WhatsApp, Facebook, Instagram, X, Telegram…).
+ * Usa el <title> y la descripción de cada página, y la imagen con el logo de public/og-image.png.
+ */
+function socialTags(html, path) {
+  const attr = (v) => escHtml(v.replace(/&amp;/g, '&'));
+  const title = html.match(/<title>(.*?)<\/title>/s)?.[1] ?? STORE.name;
+  const description = html.match(/<meta name="description" content="(.*?)"/s)?.[1] ?? STORE.tagline;
+  const image = `${base()}/og-image.png`;
+  return [
+    '<meta property="og:type" content="website" />',
+    '<meta property="og:locale" content="es_PE" />',
+    `<meta property="og:site_name" content="${attr(STORE.name)}" />`,
+    `<meta property="og:url" content="${base()}${path}" />`,
+    `<meta property="og:title" content="${attr(title)}" />`,
+    `<meta property="og:description" content="${attr(description)}" />`,
+    `<meta property="og:image" content="${image}" />`,
+    `<meta property="og:image:secure_url" content="${image}" />`,
+    '<meta property="og:image:type" content="image/png" />',
+    '<meta property="og:image:width" content="1200" />',
+    '<meta property="og:image:height" content="630" />',
+    `<meta property="og:image:alt" content="Logo de ${attr(STORE.name)}" />`,
+    '<meta name="twitter:card" content="summary_large_image" />',
+    `<meta name="twitter:title" content="${attr(title)}" />`,
+    `<meta name="twitter:description" content="${attr(description)}" />`,
+    `<meta name="twitter:image" content="${image}" />`,
+  ].join('\n    ');
+}
+
 const COMMON_HEAD = [
   '<meta name="theme-color" content="#ffffff" />',
   '<link rel="icon" href="/favicon.svg" type="image/svg+xml" />',
@@ -128,7 +157,10 @@ export function seoPlugin() {
         tags.push(jsonLd());
       }
 
-      return fillTokens(includePartials(html)).replace('</head>', `    ${tags.join('\n    ')}\n  </head>`);
+      let out = fillTokens(includePartials(html));
+      // La vista previa va justo después del <title>: algunas apps solo leen el inicio de la página
+      if (PUBLIC_PAGES.includes(path)) out = out.replace('</title>', `</title>\n    ${socialTags(out, path)}`);
+      return out.replace('</head>', `    ${tags.join('\n    ')}\n  </head>`);
     },
     generateBundle() {
       const emit = (fileName, source) => this.emitFile({ type: 'asset', fileName, source });
