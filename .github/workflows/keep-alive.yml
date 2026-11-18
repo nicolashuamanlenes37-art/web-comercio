@@ -1,0 +1,31 @@
+# Mantiene despierta la base de datos gratuita de Supabase.
+# Supabase pausa los proyectos gratis tras 7 días sin actividad; esto hace
+# una consulta mínima cada 2 días para que nunca llegue a pausarse.
+#
+# Se puede ejecutar a mano en GitHub → Actions → "Keep alive Supabase" → Run workflow.
+name: Keep alive Supabase
+
+on:
+  schedule:
+    - cron: '17 14 */2 * *' # cada 2 días, 9:17 a. m. hora de Lima
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      # Valores públicos (los mismos que usa la página en el navegador)
+      SUPABASE_URL: https://iuwxbpzqcjkanlpmanwy.supabase.co
+      SUPABASE_KEY: sb_publishable_pz2MiFsc0XOBFHQog8ivGQ_U6hO1FWS
+    steps:
+      - name: Consultar la base de datos
+        run: |
+          curl --fail --silent --show-error --retry 3 --retry-delay 20 --max-time 30 \
+            -H "apikey: $SUPABASE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_KEY" \
+            "$SUPABASE_URL/rest/v1/categories?select=id&limit=1"
+          echo
+          echo "Supabase activo: $(date -u)"
