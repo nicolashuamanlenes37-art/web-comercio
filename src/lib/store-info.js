@@ -1,8 +1,7 @@
 import { STORE } from '../config.js';
+import { prettyPhone } from './format.js';
 import { bindWhatsAppLinks } from './whatsapp.js';
-import { trackWhatsAppClicks } from './analytics.js';
-
-const prettyPhone = (n) => n.replace(/^51/, '').replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
+import { initAnalytics, trackWhatsAppClicks } from './analytics.js';
 
 /** Rellena datos de contacto comunes a todas las páginas. */
 export function initStoreInfo(root = document) {
@@ -25,5 +24,6 @@ export function initStoreInfo(root = document) {
   });
   root.querySelectorAll('[data-legal]').forEach((el) => (el.textContent = STORE.legal[el.dataset.legal] || ''));
   bindWhatsAppLinks(root);
+  initAnalytics();
   trackWhatsAppClicks(root);
 }

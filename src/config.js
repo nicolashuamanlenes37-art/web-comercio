@@ -4,13 +4,14 @@
  */
 export const STORE = {
   name: 'Accesorios N&D',
-  tagline: 'Accesorios para celular, computadora y hogar, artículos de limpieza y más.',
+  tagline: 'Tecnología, hogar, limpieza, bebidas y harinas en un solo lugar.',
   // Número de WhatsApp con código de país, sin "+" ni espacios.
   whatsapp: '51916083665',
   currency: 'S/',
   email: '',
   instagram: '',
   city: 'Lima, Perú',
+  payments: ['Yape', 'Plin', 'efectivo'],
   // Horario de atención. Ej.: 'Lunes a sábado, 9:00 a 19:00'. Vacío = no se muestra.
   hours: '',
   // El mismo horario para Google (formato schema.org). Ej.: ['Mo-Sa 09:00-19:00']
@@ -46,3 +47,6 @@ export const SUPABASE = {
   key: env.VITE_SUPABASE_PUBLISHABLE_KEY || '',
   bucket: 'productos',
 };
+
+/** true cuando la página está conectada a Supabase (si no, usa el catálogo de ejemplo). */
+export const hasSupabase = Boolean(SUPABASE.url && SUPABASE.key);

@@ -1,0 +1,66 @@
+/* Campos de formulario: panel y Libro de Reclamaciones */
+.field {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.field > span {
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+.field em {
+  display: block;
+  color: var(--color-muted);
+  font-size: var(--text-xs);
+  font-style: normal;
+  font-weight: 400;
+}
+.input,
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface);
+  font: inherit;
+  font-size: 16px; /* evita el zoom automático en iPhone */
+  color: var(--color-ink);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.field textarea {
+  resize: vertical;
+}
+.input:focus,
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: 0;
+  border-color: var(--color-accent);
+  box-shadow: var(--ring-accent);
+}
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: 10px 0;
+  font-size: var(--text-md);
+}
+.check input {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--color-accent);
+}
+.form-error {
+  padding: var(--space-3) var(--space-4);
+  border-radius: 12px;
+  background: var(--color-danger-bg);
+  color: var(--color-danger-ink);
+  font-size: var(--text-sm);
+}

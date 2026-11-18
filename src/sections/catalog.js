@@ -1,14 +1,15 @@
 import { $, $$, esc, normalize } from '../lib/dom.js';
 import { reveal } from '../lib/motion.js';
 import { plural } from '../lib/format.js';
-import { productCard } from '../components/productCard.js';
+import { productCard, paintAddButton } from '../components/productCard.js';
 import { cart } from '../store/cart.js';
+import { waLink } from '../lib/whatsapp.js';
+import { STORE } from '../config.js';
 
 let data = { categories: [], products: [] };
 const filter = { query: '', category: '' };
 
 const productsOf = (catId) => data.products.filter((p) => p.categoryId === catId);
-const productById = (id) => data.products.find((p) => p.id === id);
 
 /* ---------- Render ---------- */
 
@@ -32,14 +33,13 @@ function bandHTML(cat, items = productsOf(cat.id)) {
     </div>
     <div class="grid grid--4">
       ${cover}
-      ${items.map((p, i) => productCard(p, { delay: ((i + 1) % 4) * 0.06 })).join('')}
+      ${items.map((p, i) => productCard(p, { delay: ((i + 1) % 4) * 0.06, anchor: true })).join('')}
     </div>
   </section>`;
 }
 
 function renderBands() {
-  const known = new Set(data.categories.map((c) => c.id));
-  const orphans = data.products.filter((p) => !known.has(p.categoryId));
+  const orphans = data.products.filter((p) => !p.categoryId);
   $('#bands').removeAttribute('aria-busy');
   $('#bands').innerHTML =
     data.categories.map((c) => bandHTML(c)).join('') +
@@ -58,10 +58,20 @@ function renderResults() {
   $('#resultsTitle').textContent = cat ? cat.name : `Resultados para “${filter.query}”`;
   $('#resultsGrid').innerHTML = list.map((p, i) => productCard(p, { delay: (i % 8) * 0.04 })).join('');
   $('#resultsEmpty').hidden = list.length > 0;
+  $('#resultsStatus').textContent = plural(list.length, 'producto encontrado', 'productos encontrados');
   reveal($('#results'));
 }
 
-/* ---------- Filtro (lo usa el hero) ---------- */
+/* ---------- Filtro (lo usan el buscador y las categorías del hero) ---------- */
+
+/** Marca el botón de la categoría activa ("Todo" si no hay ninguna). */
+function syncPills() {
+  $$('#categoryPills .pill').forEach((pill) => {
+    const on = pill.dataset.category === filter.category;
+    pill.classList.toggle('is-active', on);
+    pill.setAttribute('aria-pressed', on);
+  });
+}
 
 export function setFilter({ query = '', category = '' }, { scroll = false } = {}) {
   filter.query = query;
@@ -70,11 +80,19 @@ export function setFilter({ query = '', category = '' }, { scroll = false } = {}
   $('#results').hidden = !active;
   $('#bands').hidden = active;
   if (active) renderResults();
+  else $('#resultsGrid').innerHTML = '';
+  syncPills();
   if (scroll) $('#catalogo').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-export function scrollToProduct(id) {
+/** Quita búsqueda y categoría: vuelve al catálogo completo. */
+function clearFilter() {
+  $('#searchInput').value = '';
   setFilter({});
+}
+
+export function scrollToProduct(id) {
+  clearFilter();
   const el = document.getElementById(`p-${id}`);
   if (!el) return;
   el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -85,33 +103,44 @@ export function scrollToProduct(id) {
 
 /* ---------- Interacción ---------- */
 
+/** Actualiza el botón "+" de todas las tarjetas de ese producto (sin redibujarlas). */
 function refreshProduct(id) {
-  const p = productById(id);
-  if (!p) return;
-  $$(`.product[data-product="${CSS.escape(id)}"]`).forEach((old) => {
-    const tmp = document.createElement('div');
-    tmp.innerHTML = productCard(p, { reveal: false });
-    old.replaceWith(tmp.firstElementChild);
-  });
+  const qty = cart.qty(id);
+  $$(`.product[data-product="${CSS.escape(id)}"] [data-add]`).forEach((btn) => paintAddButton(btn, qty));
 }
 
 function bindEvents() {
   $('#catalogo').addEventListener('click', (e) => {
-    const card = e.target.closest('.product');
-    if (!card || !e.target.closest('[data-add]')) return;
-    const id = card.dataset.product;
-    cart.add(id);
-    $(`.product[data-product="${CSS.escape(id)}"] [data-add]`)?.classList.add('is-pop');
+    const btn = e.target.closest('[data-add]');
+    if (!btn) return;
+    cart.add(btn.closest('.product').dataset.product);
+    btn.classList.remove('is-pop');
+    void btn.offsetWidth;
+    btn.classList.add('is-pop');
   });
 
   cart.onChange((ev) => {
     if (ev.productId) refreshProduct(ev.productId);
   });
 
-  $('#clearFilter').addEventListener('click', () => {
-    $('#searchInput').value = '';
-    $('#categoryPills .pill')?.click();
-  });
+  $('#clearFilter').addEventListener('click', clearFilter);
+}
+
+/** Si el catálogo no carga (sin internet o falla del servidor), ofrece reintentar o pedir por WhatsApp. */
+export function showCatalogError() {
+  const msg = `Hola ${STORE.name}, quiero ver su catálogo de productos`;
+  $('#categoryPills').replaceChildren();
+  $('#bands').removeAttribute('aria-busy');
+  $('#bands').innerHTML = `
+  <section class="band container catalog-error" role="alert">
+    <h2 class="band__title">No pudimos cargar el catálogo</h2>
+    <p>Revisa tu conexión e intenta otra vez, o escríbenos y te enviamos los productos por WhatsApp.</p>
+    <div class="catalog-error__actions">
+      <button class="btn btn--accent" type="button" data-retry>Reintentar</button>
+      <a class="btn btn--ghost" href="${esc(waLink(msg))}" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+    </div>
+  </section>`;
+  $('#bands [data-retry]').addEventListener('click', () => location.reload());
 }
 
 export function initCatalog(catalog) {

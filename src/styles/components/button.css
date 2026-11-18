@@ -29,6 +29,24 @@
 .btn--block {
   width: 100%;
 }
+.btn--sm {
+  height: 38px;
+  padding: 0 var(--space-4);
+  font-size: var(--text-sm);
+}
+.btn--ghost {
+  border-color: var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-pill);
+}
+.btn--danger {
+  background: var(--color-danger);
+  color: #fff;
+}
+.btn--danger-text {
+  color: var(--color-danger);
+}
 
 .icon-btn {
   position: relative;

@@ -2,7 +2,8 @@ import './styles/legal.css';
 
 import { $ } from './lib/dom.js';
 import { initStoreInfo } from './lib/store-info.js';
-import { restEnabled, restInsert } from './lib/rest.js';
+import { hasSupabase } from './config.js';
+import { restInsert } from './lib/rest.js';
 import { track } from './lib/analytics.js';
 
 initStoreInfo();
@@ -30,7 +31,7 @@ if (form) {
       form.reportValidity();
       return;
     }
-    if (!restEnabled) {
+    if (!hasSupabase) {
       error.textContent = 'El Libro de Reclamaciones no está disponible en este momento. Escríbenos por WhatsApp y registraremos tu reclamo.';
       error.hidden = false;
       return;
@@ -63,8 +64,10 @@ if (form) {
       track('reclamo_enviado', { tipo: row.kind });
       form.hidden = true;
       $('#claimCode').textContent = code;
-      $('#claimDone').hidden = false;
-      $('#claimDone').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const done = $('#claimDone');
+      done.hidden = false;
+      done.focus(); // el lector de pantalla lee el código del reclamo
+      done.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } catch (err) {
       console.error(err);
       error.textContent = 'No se pudo registrar. Revisa los datos e intenta otra vez.';

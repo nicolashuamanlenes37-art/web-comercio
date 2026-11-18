@@ -1,5 +1,5 @@
 import { esc } from '../lib/dom.js';
-import { PLACEHOLDER } from '../components/productCard.js';
+import { PLACEHOLDER, imgSrc } from '../lib/product-image.js';
 
 /**
  * Campo de foto: vista previa + "Elegir foto" (galería o cámara) + "Usar enlace".
@@ -10,17 +10,17 @@ export function imageFieldHTML(current, label = 'Foto') {
   <div class="image-field" data-image-field>
     <span class="image-field__label">${label}</span>
     <div class="image-field__preview">
-      <img src="${esc(current || PLACEHOLDER)}" alt="" data-preview />
+      <img src="${imgSrc(current)}" alt="" data-preview />
     </div>
     <div class="image-field__actions">
       <label class="btn btn--ghost btn--sm">
-        <input type="file" accept="image/*" data-file hidden />
+        <input class="sr-only" type="file" accept="image/*" data-file />
         Elegir foto
       </label>
       <button class="btn btn--ghost btn--sm" type="button" data-use-url>Usar enlace</button>
       ${current ? '<button class="link-btn" type="button" data-clear>Quitar</button>' : ''}
     </div>
-    <input class="image-field__url" type="url" placeholder="https://… (enlace de una imagen)" data-url value="" hidden />
+    <input class="input" type="url" placeholder="https://… (enlace de una imagen)" aria-label="Enlace de la foto" data-url value="" hidden />
     <input type="hidden" name="image_url" value="${esc(current || '')}" />
   </div>`;
 }

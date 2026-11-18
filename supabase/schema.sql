@@ -107,10 +107,21 @@ create policy "categories_read" on public.categories
   using (active or (select public.is_admin()));
 
 drop policy if exists "categories_admin_write" on public.categories;
-create policy "categories_admin_write" on public.categories
-  for all to authenticated
+drop policy if exists "categories_admin_insert" on public.categories;
+create policy "categories_admin_insert" on public.categories
+  for insert to authenticated
+  with check ((select public.is_admin()));
+
+drop policy if exists "categories_admin_update" on public.categories;
+create policy "categories_admin_update" on public.categories
+  for update to authenticated
   using ((select public.is_admin()))
   with check ((select public.is_admin()));
+
+drop policy if exists "categories_admin_delete" on public.categories;
+create policy "categories_admin_delete" on public.categories
+  for delete to authenticated
+  using ((select public.is_admin()));
 
 -- Productos: todos ven los activos; solo administradores editan
 drop policy if exists "products_read" on public.products;
@@ -119,10 +130,21 @@ create policy "products_read" on public.products
   using (active or (select public.is_admin()));
 
 drop policy if exists "products_admin_write" on public.products;
-create policy "products_admin_write" on public.products
-  for all to authenticated
+drop policy if exists "products_admin_insert" on public.products;
+create policy "products_admin_insert" on public.products
+  for insert to authenticated
+  with check ((select public.is_admin()));
+
+drop policy if exists "products_admin_update" on public.products;
+create policy "products_admin_update" on public.products
+  for update to authenticated
   using ((select public.is_admin()))
   with check ((select public.is_admin()));
+
+drop policy if exists "products_admin_delete" on public.products;
+create policy "products_admin_delete" on public.products
+  for delete to authenticated
+  using ((select public.is_admin()));
 
 -- Administradores: cada usuario solo puede comprobar su propio correo
 drop policy if exists "admins_self" on public.admins;
@@ -147,6 +169,25 @@ create policy "complaints_admin_update" on public.complaints
   using ((select public.is_admin()))
   with check ((select public.is_admin()));
 
+-- ---------- Permisos mínimos ----------
+-- Supabase da todos los permisos por defecto y deja que RLS filtre.
+-- Aquí cada rol recibe solo lo que la página usa (defensa en profundidad).
+revoke all on public.categories, public.products, public.admins, public.complaints from anon, authenticated;
+
+grant select on public.categories, public.products to anon;
+grant select, insert, update, delete on public.categories, public.products to authenticated;
+grant select on public.admins to authenticated;
+
+-- Reclamos: el visitante solo llena los datos del formulario. La fecha, el estado y la
+-- respuesta los pone la base / el administrador (no se pueden falsificar).
+grant insert (code, kind, full_name, document, address, phone, email, guardian, item, amount, detail, request)
+  on public.complaints to anon, authenticated;
+grant select, update (status, response, answered_at) on public.complaints to authenticated;
+
+-- is_admin() la usan las políticas de lectura, también para visitantes
+revoke all on function public.is_admin() from public;
+grant execute on function public.is_admin() to anon, authenticated;
+
 -- ---------- Fotos (Storage) ----------
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
@@ -155,6 +196,13 @@ on conflict (id) do update
   set public = excluded.public,
       file_size_limit = excluded.file_size_limit,
       allowed_mime_types = excluded.allowed_mime_types;
+
+-- Leer la lista de archivos (necesario para borrar fotos viejas). Las fotos se ven
+-- igual por su enlace público; esto no expone nada a los visitantes.
+drop policy if exists "productos_admin_select" on storage.objects;
+create policy "productos_admin_select" on storage.objects
+  for select to authenticated
+  using (bucket_id = 'productos' and (select public.is_admin()));
 
 drop policy if exists "productos_admin_insert" on storage.objects;
 create policy "productos_admin_insert" on storage.objects

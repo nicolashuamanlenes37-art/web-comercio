@@ -11,14 +11,16 @@ create function auth.jwt() returns jsonb language sql stable as $$ select coales
 create table storage.buckets (id text primary key, name text, public bool, file_size_limit bigint, allowed_mime_types text[]);
 create table storage.objects (id uuid default gen_random_uuid(), bucket_id text, name text);
 alter table storage.objects enable row level security;
+grant all on storage.objects to anon, authenticated;
 grant usage on schema public, auth, storage to anon, authenticated;
+-- Como en Supabase: permisos amplios por defecto (el esquema debe recortarlos)
+alter default privileges in schema public grant all on tables to anon, authenticated;
+alter default privileges in schema public grant all on sequences to anon, authenticated;
 `);
 await db.exec(readFileSync(new URL('../supabase/schema.sql', import.meta.url),'utf8'));
 await db.exec(readFileSync(new URL('../supabase/seed.sql', import.meta.url),'utf8'));
 await db.exec(readFileSync(new URL('../supabase/seed.sql', import.meta.url),'utf8')); // idempotente
-await db.exec(`grant select, insert, update, delete on all tables in schema public to anon, authenticated;
-grant usage on all sequences in schema public to anon, authenticated;
-update public.admins set email='admin@test.com';`);
+await db.exec(`update public.admins set email='admin@test.com';`);
 const q = async (role, claims, sql) => {
   await db.exec(`reset role; set request.jwt.claims = '${JSON.stringify(claims)}'; set role ${role};`);
   try { const r = await db.query(sql); return r.rows ?? r.affectedRows; } catch (e) { return 'ERR: ' + e.message; } finally { await db.exec('reset role'); }
@@ -38,3 +40,12 @@ console.log('admin self check', await q('authenticated', {email:'admin@test.com'
 console.log('user self check', await q('authenticated', {email:'otro@x.com'}, 'select email from admins'));
 console.log('upload anon', await q('anon', {}, "insert into storage.objects(bucket_id,name) values ('productos','a.webp')"));
 console.log('upload admin', await q('authenticated', {email:'admin@test.com'}, "insert into storage.objects(bucket_id,name) values ('productos','a.webp')"));
+console.log('anon delete products (debe dar ERR)', await q('anon', {}, "delete from products"));
+console.log('anon truncate (debe dar ERR)', await q('anon', {}, "truncate complaints"));
+console.log('user delete product (0 filas)', await q('authenticated', {email:'otro@x.com'}, "delete from products returning id"));
+console.log('admin insert/delete', await q('authenticated', {email:'admin@test.com'}, "with i as (insert into categories(slug,name) values ('t','T') returning id) select count(*) from i"), await q('authenticated', {email:'admin@test.com'}, "delete from categories where slug='t' returning slug"));
+console.log('anon reclamo con fecha falsa (debe dar ERR)', await q('anon', {}, "insert into complaints(code,kind,full_name,document,email,detail,request,created_at) values ('R-3','reclamo','Juan Perez','12345678','j@x.com','Producto llegó roto','Cambio','2020-01-01')"));
+console.log('admin responde reclamo', await q('authenticated', {email:'admin@test.com'}, "update complaints set status='atendido', response='Listo', answered_at=now() where code='R-1' returning status"));
+console.log('admin cambia fecha (debe dar ERR)', await q('authenticated', {email:'admin@test.com'}, "update complaints set created_at='2020-01-01' where code='R-1' returning code"));
+console.log('admin lista fotos', await q('authenticated', {email:'admin@test.com'}, "select name from storage.objects"));
+console.log('anon lista fotos (0)', await q('anon', {}, "select name from storage.objects"));

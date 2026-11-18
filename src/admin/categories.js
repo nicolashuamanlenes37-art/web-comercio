@@ -1,6 +1,6 @@
 import { $, esc, normalize } from '../lib/dom.js';
 import { supabase } from '../lib/supabase.js';
-import { PLACEHOLDER } from '../components/productCard.js';
+import { imgSrc } from '../lib/product-image.js';
 import { openSheet, closeSheet, confirmSheet, toast, showError, busy } from './ui.js';
 import { imageFieldHTML, bindImageField } from './imageField.js';
 import { uploadImage, deleteImage } from './images.js';
@@ -31,7 +31,7 @@ export function renderCategories() {
           (c) => `
       <li class="row ${c.active ? '' : 'row--off'}" data-id="${c.id}">
         <button class="row__main" type="button" data-edit>
-          <img class="row__img" src="${esc(c.cover_url || PLACEHOLDER)}" alt="" width="56" height="56" loading="lazy" />
+          <img class="row__img" src="${imgSrc(c.cover_url)}" alt="" width="56" height="56" loading="lazy" />
           <span class="row__text">
             <strong>${esc(c.name)}</strong>
             <span>${countOf(c.id)} productos · orden ${c.sort}${c.active ? '' : ' · oculta'}</span>
@@ -60,7 +60,7 @@ function formHTML(c = {}) {
       <input name="sort" type="number" inputmode="numeric" value="${c.sort ?? state.categories.length + 1}" />
     </label>
     <label class="check"><input type="checkbox" name="active" ${c.active !== false ? 'checked' : ''} /> Visible en la tienda</label>
-    <p class="form-error" data-error hidden></p>
+    <p class="form-error" data-error role="alert" hidden></p>
     <div class="sheet__actions">
       ${c.id ? '<button class="btn btn--ghost btn--danger-text" type="button" data-delete>Eliminar</button>' : ''}
       <button class="btn btn--accent" type="submit">${c.id ? 'Guardar cambios' : 'Crear categoría'}</button>

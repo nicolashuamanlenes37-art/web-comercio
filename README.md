@@ -57,17 +57,20 @@ index.html                    Tienda
 admin/index.html              Panel de administración
 *.html                        Páginas legales
 404.html                      Página de error
-public/                       Logo, favicon, imagen para compartir
+public/                       Logo, íconos, manifest e imagen para compartir
 brand/                        Logo en SVG y PNG para redes e impresión
 supabase/schema.sql           Tablas, seguridad (RLS) y almacenamiento de fotos
 supabase/seed.sql             Catálogo inicial
-scripts/seo-plugin.mjs        Canónica, JSON-LD, Analytics, sitemap.xml y robots.txt
+scripts/seo-plugin.mjs        Build: parciales HTML, íconos, canónica, JSON-LD,
+                              sitemap.xml, robots.txt y _headers (seguridad y caché)
+.github/workflows/keep-alive.yml  Mantiene activa la base gratuita de Supabase
 src/
   config.js                   Nombre, WhatsApp y datos legales de la tienda
   data/                       Carga del catálogo (Supabase o local)
   sections/                   Header, hero, catálogo, panel del pedido
   admin/                      Panel: productos, categorías, reclamos, fotos
-  lib/                        Utilidades (DOM, formato, WhatsApp, REST)
+  lib/                        Utilidades (DOM, formato, WhatsApp, REST, Analytics)
+  partials/                   Bloques de HTML compartidos (<!-- include:nombre -->)
   styles/                     Tokens, componentes y secciones
 ```
 
@@ -126,8 +129,25 @@ Eventos que ya registra la página: `whatsapp_click` (con la ubicación del bot�
 Crear el perfil en https://business.google.com con el nombre, teléfono, horario y el link de la página.
 Es gratis y es lo que más ayuda a que la encuentren en búsquedas de Lima.
 
-## 6. Seguridad
+## 6. Base de datos siempre activa (plan gratuito)
+
+Supabase pausa los proyectos gratuitos después de 7 días sin actividad. El archivo
+`.github/workflows/keep-alive.yml` hace una consulta mínima cada 2 días desde GitHub Actions
+para que nunca se pause. No necesita configuración: funciona solo al estar en GitHub.
+
+- Para comprobarlo: GitHub → **Actions → Keep alive Supabase**. Se puede correr a mano con **Run workflow**.
+- Si el repositorio es **público**, GitHub apaga las tareas programadas tras 60 días sin commits
+  (avisa por correo). Basta con volver a activarla en Actions o hacer cualquier commit.
+- Espacio del plan gratuito: 500 MB de base de datos y 1 GB de fotos. Cada foto subida desde el
+  panel se convierte a WebP de 1000×1000 (unos 20–80 KB), así que alcanza para miles de productos.
+
+## 7. Seguridad
 
 - Cualquier visitante solo puede **leer** productos y categorías visibles y **registrar** reclamos.
 - Crear, editar, borrar y subir fotos solo es posible con una sesión cuyo correo esté en `admins`.
+- Cada rol de la base tiene solo los permisos que usa (`supabase/schema.sql`, “Permisos mínimos”).
 - La clave publicable de Supabase es pública por diseño; la seguridad la dan las reglas RLS.
+- La página se publica con cabeceras de seguridad (`_headers`): política de contenido (CSP),
+  bloqueo de iframes, `nosniff` y caché larga para los archivos con hash.
+- En Supabase → **Authentication → Sign In / Providers** conviene dejar desactivado
+  *Allow new users to sign up*: el administrador se crea a mano.

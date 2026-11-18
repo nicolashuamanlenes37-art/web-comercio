@@ -1,51 +1,46 @@
 import { $ } from '../lib/dom.js';
+import { createDrawer } from '../lib/drawer.js';
 
 /* ---------- Hoja (formulario deslizable) ---------- */
 
+let sheet = null;
 let onSheetClose = null;
 
+export function initSheet() {
+  sheet = createDrawer($('#sheet'), {
+    onClose: () => {
+      const fn = onSheetClose;
+      onSheetClose = null;
+      fn?.();
+    },
+  });
+}
+
+/** Abre la hoja con un contenido nuevo (reemplaza al anterior si ya estaba abierta). */
 export function openSheet(title, html, { onClose } = {}) {
-  const sheet = $('#sheet');
   $('#sheetTitle').textContent = title;
   $('#sheetBody').innerHTML = html;
   onSheetClose = onClose || null;
-  sheet.hidden = false;
-  requestAnimationFrame(() => sheet.classList.add('is-open'));
-  document.documentElement.classList.add('no-scroll');
+  sheet.open();
   return $('#sheetBody');
 }
 
-export function closeSheet() {
-  const sheet = $('#sheet');
-  if (sheet.hidden) return;
-  sheet.classList.remove('is-open');
-  document.documentElement.classList.remove('no-scroll');
-  $('.drawer__panel', sheet).addEventListener('transitionend', () => (sheet.hidden = true), { once: true });
-  onSheetClose?.();
-  onSheetClose = null;
-}
-
-export function initSheet() {
-  $('#sheet').addEventListener('click', (e) => {
-    if (e.target.closest('[data-close]')) closeSheet();
-  });
-  addEventListener('keydown', (e) => e.key === 'Escape' && closeSheet());
-}
+export const closeSheet = () => sheet.close();
 
 /* ---------- Avisos ---------- */
 
-let toastTimer;
+let toastTimers = [];
 export function toast(message, { error = false } = {}) {
   const el = $('#toast');
+  toastTimers.forEach(clearTimeout);
   el.textContent = message;
   el.classList.toggle('toast--error', error);
   el.hidden = false;
   requestAnimationFrame(() => el.classList.add('is-visible'));
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => {
-    el.classList.remove('is-visible');
-    setTimeout(() => (el.hidden = true), 300);
-  }, 2600);
+  toastTimers = [
+    setTimeout(() => el.classList.remove('is-visible'), 2600),
+    setTimeout(() => (el.hidden = true), 2900),
+  ];
 }
 
 /** Muestra un error de Supabase de forma entendible. */
@@ -65,29 +60,31 @@ export function confirmSheet(title, message, confirmLabel = 'Eliminar') {
       title,
       `<p class="sheet__text">${message}</p>
        <div class="sheet__actions">
-         <button class="btn btn--ghost" type="button" data-answer="no">Cancelar</button>
+         <button class="btn btn--ghost" type="button" data-answer="no" data-autofocus>Cancelar</button>
          <button class="btn btn--danger" type="button" data-answer="yes">${confirmLabel}</button>
        </div>`,
       { onClose: () => !answered && resolve(false) },
     );
-    body.addEventListener('click', (e) => {
-      const btn = e.target.closest('[data-answer]');
-      if (!btn) return;
-      answered = true;
-      resolve(btn.dataset.answer === 'yes');
-      closeSheet();
-    });
+    // El listener va en los botones de ESTA confirmación (no en la hoja, que se reutiliza)
+    body.querySelectorAll('[data-answer]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        answered = true;
+        resolve(btn.dataset.answer === 'yes');
+        closeSheet();
+      }),
+    );
   });
 }
 
-/** Estado de carga en un botón. */
+/** Estado de carga en un botón. Se puede llamar varias veces (cambia el texto). */
 export function busy(button, isBusy, label = 'Guardando…') {
   if (isBusy) {
-    button.dataset.label = button.textContent;
+    button.dataset.label ??= button.textContent;
     button.textContent = label;
     button.disabled = true;
   } else {
-    button.textContent = button.dataset.label || button.textContent;
+    if (button.dataset.label !== undefined) button.textContent = button.dataset.label;
+    delete button.dataset.label;
     button.disabled = false;
   }
 }

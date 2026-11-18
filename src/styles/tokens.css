@@ -14,6 +14,11 @@
   --color-dark: #111111;
   --color-accent: #2b50f0; /* azul N&D: marca, buscador y acción principal */
   --color-accent-ink: #ffffff;
+  --color-danger: #d92d20;
+  --color-danger-ink: #b42318;
+  --color-danger-bg: #fef3f2;
+  --color-success-bg: #ecfdf3;
+  --ring-accent: 0 0 0 4px rgba(43, 80, 240, 0.12); /* foco de campos */
 
   /* Tipografía */
   --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;

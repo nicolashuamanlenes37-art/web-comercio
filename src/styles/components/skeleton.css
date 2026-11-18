@@ -35,12 +35,44 @@
   gap: 8px;
   padding: var(--space-3) var(--space-2) var(--space-1);
 }
+.sk-card__body > .sk--line:nth-child(1) { width: 85%; }
+.sk-card__body > .sk--line:nth-child(2) { width: 55%; }
 .sk-card__foot {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-top: var(--space-2);
 }
+.sk-card__foot > .sk--line { width: 40%; height: 16px; }
+.sk-card__foot > .sk--circle { width: 40px; height: 40px; }
+
+/* Botones de categoría fantasma: anchos distintos para que se vea natural */
+.category-pills > .sk {
+  flex: none;
+  width: 104px;
+}
+.category-pills > .sk:nth-child(1) { width: 64px; }
+.category-pills > .sk:nth-child(3n) { width: 130px; }
+.category-pills > .sk:nth-child(3n + 2) { width: 92px; }
+
+/* Panel: barra, pestañas, buscador y filas fantasma */
+.sk-bar__btn { width: 96px; height: 36px; border-radius: var(--radius-pill); }
+.sk-tabs > .sk {
+  flex: 1;
+  height: 36px;
+  border-radius: var(--radius-pill);
+}
+.sk-toolbar > .sk { height: 44px; border-radius: var(--radius-pill); }
+.sk-toolbar > .sk:first-child { flex: 1; }
+.sk-toolbar > .sk:last-child { flex: 0 0 42%; }
+.sk-row .row__main { cursor: default; }
+.sk-row .row__text { flex: 1; gap: 8px; }
+.sk-row__img { flex: none; width: 56px; height: 56px; border-radius: 14px; }
+.sk-row .sk--line:first-child { width: 62%; }
+.sk-row .sk--line:last-child { width: 36%; }
+.sk-row:nth-child(2n) .sk--line:first-child { width: 48%; }
+.sk-row:nth-child(3n) .sk--line:first-child { width: 70%; }
+.sk-row:nth-child(2n) .sk--line:last-child { width: 28%; }
 
 /* Foto que todavía está bajando: brillo en su lugar hasta que llegue */
 .img-wait,
@@ -53,21 +85,4 @@ img.img-wait {
 }
 .img-ready > img {
   transition: opacity 0.35s ease, transform 0.6s var(--ease-out);
-}
-
-.sk-row .row__main {
-  cursor: default;
-}
-.sk-row .row__text {
-  flex: 1;
-  gap: 8px;
-}
-.sk-tabs > .sk {
-  flex: 1;
-  height: 36px;
-  border-radius: var(--radius-pill);
-}
-
-.category-pills > .sk {
-  flex: none;
 }

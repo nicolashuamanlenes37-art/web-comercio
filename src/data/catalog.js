@@ -1,4 +1,5 @@
-import { restEnabled, restSelect } from '../lib/rest.js';
+import { hasSupabase } from '../config.js';
+import { restSelect } from '../lib/rest.js';
 import { SEED_CATEGORIES, SEED_PRODUCTS } from './seed.js';
 
 /**
@@ -18,7 +19,6 @@ const fromSeed = () => ({
     featured: Boolean(p.featured),
     categoryId: p.category,
   })),
-  source: 'local',
 });
 
 async function fromSupabase() {
@@ -30,6 +30,9 @@ async function fromSupabase() {
     ),
   ]);
 
+  // Productos de una categoría oculta no se muestran (los sin categoría van a "Otros")
+  const visible = new Set(cats.map((c) => c.id));
+
   return {
     categories: cats.map((c) => ({
       id: c.id,
@@ -38,27 +41,31 @@ async function fromSupabase() {
       tagline: c.tagline || '',
       cover: c.cover_url || '',
     })),
-    products: prods.map((p) => ({
-      id: p.id,
-      name: p.name,
-      description: p.description || '',
-      price: p.price === null ? null : Number(p.price),
-      image: p.image_url || '',
-      badge: p.badge || '',
-      featured: p.featured,
-      categoryId: p.category_id,
-    })),
-    source: 'supabase',
+    products: prods
+      .filter((p) => !p.category_id || visible.has(p.category_id))
+      .map((p) => ({
+        id: p.id,
+        name: p.name,
+        description: p.description || '',
+        price: p.price === null ? null : Number(p.price),
+        image: p.image_url || '',
+        badge: p.badge || '',
+        featured: p.featured,
+        categoryId: p.category_id,
+      })),
   };
 }
 
-/** Carga el catálogo. Si Supabase falla, usa el catálogo local para no dejar la página vacía. */
+/**
+ * Carga el catálogo desde Supabase (con un reintento si falla la red).
+ * Sin Supabase configurado (desarrollo) usa el catálogo de ejemplo de seed.js.
+ */
 export async function loadCatalog() {
-  if (!restEnabled) return fromSeed();
+  if (!hasSupabase) return fromSeed();
   try {
     return await fromSupabase();
   } catch (err) {
-    console.warn('No se pudo cargar el catálogo desde Supabase, usando el local.', err);
-    return fromSeed();
+    console.warn('Reintentando cargar el catálogo…', err);
+    return fromSupabase();
   }
 }

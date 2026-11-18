@@ -5,15 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Libro de Reclamaciones · Accesorios N&amp;D</title>
     <meta name="description" content="Libro de Reclamaciones virtual de Accesorios N&D." />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
-    <header class="legal-bar">
-      <div class="container">
-        <a href="/" aria-label="Ir a la tienda"><img src="/logo.svg" alt="Accesorios N&amp;D" width="200" height="40" /></a>
-        <a class="back" href="/">← Volver a la tienda</a>
-      </div>
-    </header>
+    <!-- include:legal-header -->
 
     <main class="container doc">
       <article class="doc__card">
@@ -57,14 +51,14 @@
             <label class="field"><span>¿Qué solicitas? *</span><textarea name="request" rows="3" required minlength="5" maxlength="1000"></textarea></label>
           </fieldset>
 
-          <label class="check"><input type="checkbox" required /><span>Declaro que los datos son verdaderos y acepto la <a href="/privacidad.html">política de privacidad</a>.</span></label>
+          <label class="check"><input type="checkbox" required /><span>Declaro que los datos son verdaderos y acepto la <a href="/privacidad">política de privacidad</a>.</span></label>
 
           <p class="note">La formulación del reclamo no impide acudir a otras vías de solución de controversias ni es requisito previo para interponer una denuncia ante el INDECOPI. El proveedor deberá responder en un plazo no mayor a quince (15) días hábiles.</p>
-          <p class="form-error" id="claimError" hidden></p>
+          <p class="form-error" id="claimError" role="alert" hidden></p>
           <button class="btn btn--accent btn--block" type="submit">Enviar</button>
         </form>
 
-        <div class="success" id="claimDone" hidden>
+        <div class="success" id="claimDone" tabindex="-1" hidden>
           <span>Tu registro fue enviado. Guarda este código:</span>
           <strong id="claimCode"></strong>
           <span>Te responderemos al correo que indicaste.</span>
@@ -72,29 +66,7 @@
       </article>
     </main>
 
-    <footer class="footer">
-      <div class="container footer__grid">
-        <div>
-          <img src="/logo-blanco.svg" alt="Accesorios N&amp;D" width="200" height="40" class="footer__logo" />
-          <p class="footer__muted">Accesorios para celular, computadora y hogar, artículos de limpieza y más.</p>
-        </div>
-        <nav aria-label="Legal">
-          <h3>Legal</h3>
-          <a href="/terminos.html">Términos y condiciones</a>
-          <a href="/privacidad.html">Política de privacidad</a>
-          <a href="/libro-de-reclamaciones.html">Libro de Reclamaciones</a>
-        </nav>
-        <nav aria-label="Contacto">
-          <h3>Contacto</h3>
-          <a data-wa href="#">WhatsApp <span data-store-phone></span></a>
-          <a href="#" data-store-email></a>
-        </nav>
-      </div>
-      <div class="container footer__legal">
-        <span>© <span data-year></span> Accesorios N&amp;D</span>
-        <span>Lima, Perú</span>
-      </div>
-    </footer>
+    <!-- include:legal-footer -->
 
     <script type="module" src="/src/legal.js"></script>
   </body>

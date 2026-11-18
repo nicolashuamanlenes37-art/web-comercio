@@ -1,11 +1,10 @@
 import { $, esc, icon } from '../lib/dom.js';
 import { money, priceLabel, plural } from '../lib/format.js';
 import { waLink, orderMessage } from '../lib/whatsapp.js';
-import { PLACEHOLDER } from '../components/productCard.js';
+import { imgSrc } from '../lib/product-image.js';
+import { createDrawer } from '../lib/drawer.js';
 import { cart } from '../store/cart.js';
 import { track } from '../lib/analytics.js';
-
-let lastFocus = null;
 
 function render() {
   const lines = cart.lines();
@@ -16,6 +15,9 @@ function render() {
   const badge = $('#cartBadge');
   badge.hidden = count === 0;
   badge.textContent = count;
+  const label = count ? `Ver pedido, ${plural(count, 'producto', 'productos')}` : 'Ver pedido';
+  $('#cartButton').setAttribute('aria-label', label);
+  $('#orderBar').setAttribute('aria-label', label);
 
   $('#orderBar').hidden = count === 0;
   document.body.classList.toggle('has-order', count > 0);
@@ -33,7 +35,7 @@ function render() {
     .map(
       (l) => `
     <li class="line" data-id="${esc(l.product.id)}">
-      <img class="line__img" src="${esc(l.product.image || PLACEHOLDER)}" alt="" width="56" height="56" />
+      <img class="line__img" src="${imgSrc(l.product.image)}" alt="" width="56" height="56" />
       <div class="line__info">
         <strong>${esc(l.product.name)}</strong>
         <span>${priceLabel(l.product.price)}</span>
@@ -55,38 +57,19 @@ function bump() {
   bar.classList.add('is-bump');
 }
 
-export function openDrawer() {
-  lastFocus = document.activeElement;
-  const drawer = $('#drawer');
-  drawer.hidden = false;
-  requestAnimationFrame(() => drawer.classList.add('is-open'));
-  document.documentElement.classList.add('no-scroll');
-  $('#drawer [data-close].icon-btn').focus();
-}
-
-export function closeDrawer() {
-  const drawer = $('#drawer');
-  drawer.classList.remove('is-open');
-  document.documentElement.classList.remove('no-scroll');
-  $('.drawer__panel', drawer).addEventListener('transitionend', () => (drawer.hidden = true), { once: true });
-  lastFocus?.focus();
-}
-
 export function initCartDrawer() {
-  $('#cartButton').addEventListener('click', openDrawer);
-  $('#orderBar').addEventListener('click', openDrawer);
+  const drawer = createDrawer($('#drawer'));
+  $('#cartButton').addEventListener('click', drawer.open);
+  $('#orderBar').addEventListener('click', drawer.open);
 
-  $('#drawer').addEventListener('click', (e) => {
-    if (e.target.closest('[data-close]')) return closeDrawer();
+  $('#drawerLines').addEventListener('click', (e) => {
     const step = e.target.closest('[data-step]');
-    if (step) {
-      const id = step.closest('.line').dataset.id;
-      cart.set(id, cart.qty(id) + Number(step.dataset.step));
-    }
-  });
-
-  addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !$('#drawer').hidden) closeDrawer();
+    if (!step) return;
+    const id = step.closest('.line').dataset.id;
+    cart.set(id, cart.qty(id) + Number(step.dataset.step));
+    // La lista se vuelve a dibujar: devolver el foco al mismo botón (o a cerrar si se quitó)
+    const again = $(`.line[data-id="${CSS.escape(id)}"] [data-step="${step.dataset.step}"]`);
+    (again || $('#drawer .drawer__head [data-close]')).focus();
   });
 
   $('#sendOrder').addEventListener('click', () => {

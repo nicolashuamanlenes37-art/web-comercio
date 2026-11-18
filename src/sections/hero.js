@@ -66,14 +66,6 @@ function bindParallax() {
   addEventListener('scroll', () => scrollY < hero.offsetHeight * 1.2 && kick(), { passive: true });
 }
 
-function setActivePill(btn) {
-  document.querySelectorAll('#categoryPills .pill').forEach((p) => {
-    const on = p === btn;
-    p.classList.toggle('is-active', on);
-    p.setAttribute('aria-pressed', on);
-  });
-}
-
 function renderPills(categories, products) {
   const pills = $('#categoryPills');
   const thumbOf = (cat) => cat.cover || products.find((p) => p.categoryId === cat.id && p.image)?.image || '';
@@ -91,9 +83,8 @@ function renderPills(categories, products) {
   pills.addEventListener('click', (e) => {
     const btn = e.target.closest('.pill');
     if (!btn) return;
-    setActivePill(btn);
     $('#searchInput').value = '';
-    setFilter({ category: btn.dataset.category, query: '' }, { scroll: true });
+    setFilter({ category: btn.dataset.category }, { scroll: true });
   });
 }
 
@@ -102,8 +93,7 @@ function bindSearch() {
   $('#searchForm').addEventListener('submit', (e) => {
     e.preventDefault();
     input.blur();
-    setActivePill($('#categoryPills .pill'));
-    setFilter({ query: input.value.trim(), category: '' }, { scroll: true });
+    setFilter({ query: input.value.trim() }, { scroll: true });
   });
   input.addEventListener('input', () => {
     if (input.value.trim() === '') setFilter({});

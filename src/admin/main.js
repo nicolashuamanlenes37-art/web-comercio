@@ -14,11 +14,26 @@ const show = (id) => VIEWS.forEach((v) => ($(`#${v}`).hidden = v !== id));
 /* ---------- Pestañas ---------- */
 
 function initTabs() {
-  $('.tabs').addEventListener('click', (e) => {
-    const tab = e.target.closest('[data-tab]');
-    if (!tab) return;
-    $$('.tabs [data-tab]').forEach((t) => t.setAttribute('aria-selected', t === tab));
-    $$('.pane').forEach((p) => (p.hidden = p.id !== `pane-${tab.dataset.tab}`));
+  const tabs = $$('#tabs [role="tab"]');
+  const select = (tab) => {
+    tabs.forEach((t) => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', on);
+      t.tabIndex = on ? 0 : -1;
+      $(`#${t.getAttribute('aria-controls')}`).hidden = !on;
+    });
+    tab.focus();
+  };
+  $('#tabs').addEventListener('click', (e) => {
+    const tab = e.target.closest('[role="tab"]');
+    if (tab) select(tab);
+  });
+  // Flechas izquierda/derecha entre pestañas (patrón accesible de pestañas)
+  $('#tabs').addEventListener('keydown', (e) => {
+    const i = tabs.indexOf(document.activeElement);
+    if (i < 0 || !['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+    e.preventDefault();
+    select(tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]);
   });
 }
 
@@ -30,9 +45,38 @@ async function isAdmin(email) {
   return data.length > 0 && data[0].email.toLowerCase() === email.toLowerCase();
 }
 
-let started = false;
+let loaded = false;
+let loading = false;
 // Al llegar desde el correo de recuperación primero se pide la nueva contraseña
 let recovering = /type=recovery/.test(location.hash);
+
+async function loadData() {
+  if (loaded || loading) return;
+  loading = true;
+  try {
+    await fetchCategories();
+    await fetchProducts();
+    renderCategoryFilter();
+    renderProducts();
+    renderCategories();
+    loaded = true;
+  } catch (err) {
+    showError(err, 'No se pudo cargar el panel. Revisa tu conexión y vuelve a entrar.');
+    ['#productRows', '#categoryRows'].forEach((id) => {
+      $(id).removeAttribute('aria-busy');
+      $(id).innerHTML = '<li class="rows__empty">No se pudo cargar. Recarga la página para intentar otra vez.</li>';
+    });
+  } finally {
+    loading = false;
+  }
+  try {
+    await fetchComplaints();
+    renderComplaints();
+  } catch (err) {
+    console.warn('Reclamos no disponibles', err);
+    renderComplaints({ failed: true });
+  }
+}
 
 async function enter(session) {
   if (recovering) return show('viewRecovery');
@@ -41,23 +85,11 @@ async function enter(session) {
       $('#deniedEmail').textContent = session.user.email;
       return show('viewDenied');
     }
-    show('viewApp');
-    if (started) return;
-    started = true;
-    await fetchCategories();
-    await fetchProducts();
-    renderCategoryFilter();
-    renderProducts();
-    renderCategories();
-    try {
-      await fetchComplaints();
-      renderComplaints();
-    } catch (err) {
-      console.warn('Reclamos no disponibles', err);
-    }
   } catch (err) {
-    showError(err, 'No se pudo cargar el panel. Revisa tu conexión.');
+    return showError(err, 'No se pudo comprobar tu cuenta. Revisa tu conexión.');
   }
+  show('viewApp');
+  await loadData();
 }
 
 function initAuth() {
@@ -123,7 +155,7 @@ function initAuth() {
       return show('viewRecovery');
     }
     if (event === 'SIGNED_OUT' || !session) {
-      started = false;
+      loaded = false;
       return show('viewLogin');
     }
     if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {

@@ -26,7 +26,7 @@ export async function fetchComplaints() {
   state.complaints = data;
 }
 
-export function renderComplaints() {
+export function renderComplaints({ failed = false } = {}) {
   const pending = state.complaints.filter((c) => c.status !== 'atendido').length;
   const badge = $('#complaintsBadge');
   badge.hidden = pending === 0;
@@ -52,7 +52,7 @@ export function renderComplaints() {
       </li>`;
         })
         .join('')
-    : '<li class="rows__empty">No hay reclamos registrados.</li>';
+    : `<li class="rows__empty">${failed ? 'No se pudieron cargar los reclamos. Recarga la página.' : 'No hay reclamos registrados.'}</li>`;
 }
 
 function detailHTML(c) {

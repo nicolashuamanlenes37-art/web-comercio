@@ -7,7 +7,7 @@ import { initSecretAdmin } from './lib/secret-admin.js';
 import { initImageLoading } from './lib/img-loading.js';
 import { initHeader, renderCategoryLinks } from './sections/header.js';
 import { initHero } from './sections/hero.js';
-import { initCatalog } from './sections/catalog.js';
+import { initCatalog, showCatalogError } from './sections/catalog.js';
 import { initCartDrawer } from './sections/cartDrawer.js';
 
 initStoreInfo();
@@ -16,10 +16,14 @@ initHeader();
 initCartDrawer();
 initSecretAdmin(document.getElementById('footerLogo'));
 
-loadCatalog().then((catalog) => {
-  initCatalog(catalog);
-  initHero(catalog);
-  renderCategoryLinks(catalog.categories);
-  document.body.classList.remove('is-loading');
-  reveal();
-});
+loadCatalog()
+  .then((catalog) => {
+    initCatalog(catalog);
+    initHero(catalog);
+    renderCategoryLinks(catalog.categories);
+    reveal();
+  })
+  .catch((err) => {
+    console.error('No se pudo cargar el catálogo', err);
+    showCatalogError();
+  });

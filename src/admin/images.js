@@ -66,6 +66,7 @@ export async function deleteImage(url) {
   const marker = `/storage/v1/object/public/${SUPABASE.bucket}/`;
   if (!url || !url.includes(marker)) return;
   const path = decodeURIComponent(url.split(marker)[1].split('?')[0]);
-  const { error } = await supabase.storage.from(SUPABASE.bucket).remove([path]);
-  if (error) console.warn('No se pudo borrar la foto anterior', error);
+  const { data, error } = await supabase.storage.from(SUPABASE.bucket).remove([path]);
+  // Supabase no da error si no tiene permiso: devuelve una lista vacía
+  if (error || !data?.length) console.warn('No se pudo borrar la foto anterior', path, error);
 }

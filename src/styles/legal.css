@@ -3,6 +3,7 @@
 @import './tokens.css';
 @import './base.css';
 @import './components/button.css';
+@import './components/form.css';
 @import './sections/footer.css';
 
 .legal-bar {
@@ -112,35 +113,6 @@
     grid-template-columns: 1fr 1fr;
   }
 }
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.field > span {
-  font-size: var(--text-sm);
-  font-weight: 500;
-}
-.field input,
-.field select,
-.field textarea {
-  width: 100%;
-  min-height: 48px;
-  padding: 12px 14px;
-  border: 1px solid var(--color-border);
-  border-radius: 14px;
-  background: var(--color-surface);
-  font: inherit;
-  font-size: 16px;
-  color: var(--color-ink);
-}
-.field input:focus,
-.field select:focus,
-.field textarea:focus {
-  outline: 0;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 4px rgba(43, 80, 240, 0.12);
-}
 .kind {
   display: flex;
   gap: var(--space-2);
@@ -156,7 +128,7 @@
 }
 .kind label:has(input:checked) {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(43, 80, 240, 0.12);
+  box-shadow: var(--ring-accent);
 }
 .kind input {
   accent-color: var(--color-accent);
@@ -166,34 +138,18 @@
   color: var(--color-muted);
   font-size: var(--text-xs);
 }
-.check {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
+.claim .check {
   font-size: var(--text-sm);
 }
-.check input {
-  width: 20px;
-  height: 20px;
-  margin-top: 1px;
-  accent-color: var(--color-accent);
-}
-.note {
+.doc .note {
   color: var(--color-muted);
   font-size: var(--text-xs);
   line-height: 1.5;
 }
-.form-error {
-  padding: var(--space-3) var(--space-4);
-  border-radius: 12px;
-  background: #fef3f2;
-  color: #b42318;
-  font-size: var(--text-sm);
-}
 .success {
   padding: var(--space-6);
   border-radius: 20px;
-  background: #ecfdf3;
+  background: var(--color-success-bg);
   text-align: center;
 }
 .success strong {
@@ -221,15 +177,4 @@
   justify-content: center;
   gap: var(--space-3);
   margin-top: var(--space-6);
-}
-.notfound .btn {
-  text-decoration: none;
-}
-.notfound .btn--accent {
-  color: var(--color-accent-ink);
-}
-.notfound .btn--ghost {
-  border-color: var(--color-border);
-  background: #fff;
-  color: var(--color-ink);
 }
