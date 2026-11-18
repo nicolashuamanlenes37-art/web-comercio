@@ -54,7 +54,7 @@ function includePartials(html, depth = 0) {
 function jsonLd() {
   const data = {
     '@context': 'https://schema.org',
-    '@type': 'Store',
+    '@type': 'OnlineStore', // tienda solo online: sin dirección de local
     name: STORE.name,
     description: STORE.tagline,
     url: `${base()}/`,

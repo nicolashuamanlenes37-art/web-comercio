@@ -13,15 +13,16 @@ export const STORE = {
   city: 'Lima, Perú',
   payments: ['Yape', 'Plin', 'efectivo'],
   // Horario de atención. Ej.: 'Lunes a sábado, 9:00 a 19:00'. Vacío = no se muestra.
-  hours: '',
+  hours: 'Lunes a sábado, de 8:00 a. m. a 6:00 p. m.',
   // El mismo horario para Google (formato schema.org). Ej.: ['Mo-Sa 09:00-19:00']
-  openingHours: [],
+  openingHours: ['Mo-Sa 08:00-18:00'],
 
   // Datos del proveedor para el Libro de Reclamaciones y las páginas legales.
   legal: {
-    owner: 'Nicolás [apellidos por completar]',
-    document: 'DNI / RUC: [por completar]',
-    address: '[Dirección del local por completar]',
+    owner: 'Nicolás Ricardo Huaman Lenes',
+    document: 'RUC 10452759221',
+    // Tienda solo online (sin local). Vacío = no se muestra.
+    address: '',
   },
 };
 

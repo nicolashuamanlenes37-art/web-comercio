@@ -22,7 +22,11 @@ export function initStoreInfo(root = document) {
     if (!STORE.hours) return el.remove();
     el.textContent = `Horario: ${STORE.hours}`;
   });
-  root.querySelectorAll('[data-legal]').forEach((el) => (el.textContent = STORE.legal[el.dataset.legal] || ''));
+  root.querySelectorAll('[data-legal]').forEach((el) => {
+    const value = STORE.legal[el.dataset.legal];
+    if (!value) return el.remove();
+    el.textContent = value;
+  });
   bindWhatsAppLinks(root);
   initAnalytics();
   trackWhatsAppClicks(root);
