@@ -6,7 +6,7 @@ export const STORE = {
   name: 'Accesorios N&D',
   tagline: 'Tecnología, hogar, limpieza, bebidas y harinas en un solo lugar.',
   // Número de WhatsApp con código de país, sin "+" ni espacios.
-  whatsapp: '51916083665',
+  whatsapp: '51918460597',
   currency: 'S/',
   email: '',
   instagram: '',
