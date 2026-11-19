@@ -80,13 +80,13 @@
           </li>
           <li class="step" data-reveal style="--delay: 0.08s">
             <span class="step__num">2</span>
-            <h3>Envíalo por WhatsApp</h3>
-            <p>Te llega con el detalle listo. Confirmamos stock, precio y envío.</p>
+            <h3>Reserva con el %DEPOSIT_PERCENT% %</h3>
+            <p>Paga el adelanto por %DEPOSIT_METHODS%, sube la captura y envía tu pedido por WhatsApp.</p>
           </li>
           <li class="step" data-reveal style="--delay: 0.16s">
             <span class="step__num">3</span>
-            <h3>Paga y recibe</h3>
-            <p>%PAYMENTS_OR%. Te lo enviamos por delivery.</p>
+            <h3>Recibe y paga el resto</h3>
+            <p>Te lo enviamos por delivery y pagas el %BALANCE_PERCENT% % al recibir (%PAYMENTS_OR%).</p>
           </li>
         </ol>
       </section>
@@ -97,7 +97,11 @@
         <div class="faq">
           <details>
             <summary>¿Cómo sé si hay stock?</summary>
-            <p>Cuando nos envías tu pedido por WhatsApp te confirmamos la disponibilidad de cada producto antes de cobrarte.</p>
+            <p>Al recibir tu reserva revisamos el stock y te confirmamos por WhatsApp. Si algún producto no está disponible, te devolvemos el adelanto de ese producto o lo cambias por otro.</p>
+          </details>
+          <details>
+            <summary>¿Por qué piden un adelanto del %DEPOSIT_PERCENT% %?</summary>
+            <p>El adelanto reserva tu pedido: separamos los productos para ti y coordinamos la entrega. El %BALANCE_PERCENT% % restante lo pagas cuando recibes tu pedido. Si cancelas tu pedido, el adelanto no se devuelve; si nosotros no podemos entregarlo, te lo devolvemos completo.</p>
           </details>
           <details>
             <summary>¿Puedo elegir el color o modelo?</summary>
@@ -172,12 +176,67 @@
             <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
           </button>
         </header>
-        <ul class="drawer__lines" id="drawerLines"></ul>
-        <p class="drawer__empty" id="drawerEmpty">Aún no agregas productos.</p>
-        <footer class="drawer__foot">
-          <div class="drawer__total"><span>Subtotal</span><strong id="drawerSubtotal">—</strong></div>
-          <p class="drawer__note" id="drawerNote"></p>
-          <button class="btn btn--accent btn--block" type="button" id="sendOrder">Enviar pedido por WhatsApp</button>
+        <div class="drawer__body">
+          <ul class="drawer__lines" id="drawerLines"></ul>
+          <p class="drawer__empty" id="drawerEmpty">Aún no agregas productos.</p>
+
+          <!-- Reserva enviada -->
+          <div class="reserve-done" id="reserveDone" tabindex="-1" hidden>
+            <strong>¡Reserva enviada!</strong>
+            <p>Revisa tu WhatsApp: te confirmaremos el pedido y la fecha de entrega.</p>
+            <a class="btn btn--ghost btn--sm" id="reserveAgain" href="#" target="_blank" rel="noopener">Abrir WhatsApp otra vez</a>
+          </div>
+
+          <div class="drawer__summary" id="drawerSummary" hidden>
+            <div class="drawer__total"><span>Total</span><strong id="drawerSubtotal">—</strong></div>
+            <p class="drawer__note" id="drawerNote"></p>
+
+            <!-- Reserva con adelanto -->
+            <form class="reserve" id="reserveForm" novalidate hidden>
+              <dl class="reserve__split">
+                <div class="reserve__deposit"><dt>Adelanto para reservar (%DEPOSIT_PERCENT%&nbsp;%)</dt><dd id="reserveDeposit"></dd></div>
+                <div><dt>Pagas al recibir (%BALANCE_PERCENT%&nbsp;%)</dt><dd id="reserveBalance"></dd></div>
+              </dl>
+
+              <ol class="reserve__steps">
+                <li>
+                  <span class="reserve__label">Paga el adelanto por <span data-pay-methods></span></span>
+                  <div class="reserve__pay">
+                    <div>
+                      <strong class="reserve__phone" data-pay-phone></strong>
+                      <span data-pay-holder></span>
+                    </div>
+                    <button class="btn btn--ghost btn--sm" type="button" id="copyPhone">Copiar</button>
+                  </div>
+                </li>
+                <li>
+                  <span class="reserve__label" id="captureLabel">Sube la captura del pago</span>
+                  <label class="reserve__capture" id="captureBox">
+                    <input class="sr-only" type="file" accept="image/*" id="captureInput" aria-labelledby="captureLabel" />
+                    <img id="capturePreview" alt="Vista previa de la captura" hidden />
+                    <span id="captureText">Elegir captura</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="field">
+                    <span class="reserve__label">Escribe el N.° de operación</span>
+                    <input type="text" id="operationInput" inputmode="numeric" autocomplete="off" maxlength="20" placeholder="Ej.: 01234567" />
+                  </label>
+                </li>
+              </ol>
+
+              <label class="check">
+                <input type="checkbox" id="reserveTerms" />
+                <span>Entiendo que el adelanto <b>no se devuelve si cancelo</b> mi pedido (<a href="/terminos#reserva" target="_blank" rel="noopener">Términos</a>).</span>
+              </label>
+              <p class="form-error" id="reserveError" role="alert" hidden></p>
+            </form>
+          </div>
+        </div>
+
+        <footer class="drawer__foot" id="drawerFoot" hidden>
+          <button class="btn btn--accent btn--block" type="button" id="sendOrder">Enviar reserva por WhatsApp</button>
+          <p class="drawer__hint" id="sendHint"></p>
         </footer>
       </aside>
     </div>

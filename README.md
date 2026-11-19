@@ -81,6 +81,7 @@ src/
 | Productos, precios, fotos, categorías | Panel `/admin/` (no requiere tocar código) |
 | Número de WhatsApp | `src/config.js` → `whatsapp` |
 | Horario de atención | `src/config.js` → `hours` y `openingHours` |
+| Reserva: % de adelanto, número y titular de Yape/Plin | `src/config.js` → `reservation` |
 | Dominio de la página | `src/config.js` → `SITE.url` |
 | Google Analytics / Search Console | `src/config.js` → `SITE.gaId` / `SITE.googleVerification` |
 | Datos legales (nombre, DNI/RUC, dirección) | `src/config.js` → `legal` |
@@ -129,7 +130,23 @@ Eventos que ya registra la página: `whatsapp_click` (con la ubicación del bot�
 Crear el perfil en https://business.google.com con el nombre, teléfono, horario y el link de la página.
 Es gratis y es lo que más ayuda a que la encuentren en búsquedas de Lima.
 
-## 6. Base de datos siempre activa (plan gratuito)
+## 6. Reserva con adelanto
+
+Para enviar un pedido el cliente paga un adelanto (30 % del **total** del pedido) por Yape o Plin,
+sube la captura y escribe el número de operación. Al dueño le llegan los productos, el total,
+el adelanto, el saldo a pagar al recibir y el N.° de operación, con la captura:
+
+- **Desde el celular:** se abre el menú Compartir con la captura como **imagen** y el pedido escrito
+  debajo; el cliente elige WhatsApp y el chat de la tienda. La captura no se sube a ningún servidor.
+  El pedido también queda copiado, por si WhatsApp no pega el texto junto a la imagen.
+- **Desde una computadora** (o si el celular no permite compartir): la captura se sube al bucket
+  `adelantos` de Supabase (carpeta `capturas/`) y el mensaje lleva un link para verla. Los visitantes
+  solo pueden subir imágenes; no pueden ver la lista ni borrar. Cada link lleva un código aleatorio.
+- Si el pedido tiene productos sin precio, no se puede reservar: se envía como consulta normal.
+- El porcentaje, el número y el titular se cambian en `src/config.js` → `reservation`.
+- Las condiciones (el adelanto no se devuelve si el cliente cancela) están en `terminos.html` → sección 3.
+
+## 7. Base de datos siempre activa (plan gratuito)
 
 Supabase pausa los proyectos gratuitos después de 7 días sin actividad. El archivo
 `.github/workflows/keep-alive.yml` hace una consulta mínima cada 2 días desde GitHub Actions
@@ -141,7 +158,7 @@ para que nunca se pause. No necesita configuración: funciona solo al estar en G
 - Espacio del plan gratuito: 500 MB de base de datos y 1 GB de fotos. Cada foto subida desde el
   panel se convierte a WebP de 1000×1000 (unos 20–80 KB), así que alcanza para miles de productos.
 
-## 7. Seguridad
+## 8. Seguridad
 
 - Cualquier visitante solo puede **leer** productos y categorías visibles y **registrar** reclamos.
 - Crear, editar, borrar y subir fotos solo es posible con una sesión cuyo correo esté en `admins`.

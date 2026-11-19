@@ -219,6 +219,38 @@ create policy "productos_admin_delete" on storage.objects
   for delete to authenticated
   using (bucket_id = 'productos' and (select public.is_admin()));
 
+-- ---------- Capturas de adelanto (reservas) ----------
+-- El cliente sube la captura de su pago del 30 % al enviar el pedido. El bucket es
+-- público para que el dueño la abra con el link que llega por WhatsApp, pero:
+--   - nadie puede listar los archivos (no hay política de lectura para visitantes),
+--   - el nombre lleva un código aleatorio (UUID), imposible de adivinar,
+--   - solo se aceptan imágenes de hasta 4 MB, en la carpeta capturas/.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('adelantos', 'adelantos', true, 4194304, array['image/jpeg', 'image/webp'])
+on conflict (id) do update
+  set public = excluded.public,
+      file_size_limit = excluded.file_size_limit,
+      allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "adelantos_subir" on storage.objects;
+create policy "adelantos_subir" on storage.objects
+  for insert to anon, authenticated
+  with check (
+    bucket_id = 'adelantos'
+    and name ~ '^capturas/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(jpg|webp)$'
+  );
+
+-- El administrador puede ver la lista y borrar capturas antiguas
+drop policy if exists "adelantos_admin_select" on storage.objects;
+create policy "adelantos_admin_select" on storage.objects
+  for select to authenticated
+  using (bucket_id = 'adelantos' and (select public.is_admin()));
+
+drop policy if exists "adelantos_admin_delete" on storage.objects;
+create policy "adelantos_admin_delete" on storage.objects
+  for delete to authenticated
+  using (bucket_id = 'adelantos' and (select public.is_admin()));
+
 -- ---------- Administrador ----------
 -- Correo del dueño de la tienda. Para agregar otro administrador, añade otra fila.
 insert into public.admins (email) values ('nicolashuamanlenes37@gmail.com')

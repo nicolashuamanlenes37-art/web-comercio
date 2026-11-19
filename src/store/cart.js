@@ -25,6 +25,13 @@ export const cart = {
     notify({ type: 'set', productId });
   },
 
+  /** Vacía el pedido (después de enviarlo). */
+  clear() {
+    const ids = [...items.keys()];
+    items.clear();
+    ids.forEach((productId) => notify({ type: 'set', productId }));
+  },
+
   qty(productId) {
     return items.get(productId) || 0;
   },

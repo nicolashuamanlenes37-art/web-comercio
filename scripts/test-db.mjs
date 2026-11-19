@@ -49,3 +49,11 @@ console.log('admin responde reclamo', await q('authenticated', {email:'admin@tes
 console.log('admin cambia fecha (debe dar ERR)', await q('authenticated', {email:'admin@test.com'}, "update complaints set created_at='2020-01-01' where code='R-1' returning code"));
 console.log('admin lista fotos', await q('authenticated', {email:'admin@test.com'}, "select name from storage.objects"));
 console.log('anon lista fotos (0)', await q('anon', {}, "select name from storage.objects"));
+const uuid = '3f2b8c1e-9a4d-4e7b-8c2a-1b2c3d4e5f60';
+console.log('anon sube captura', await q('anon', {}, `insert into storage.objects(bucket_id,name) values ('adelantos','capturas/${uuid}.jpg')`));
+console.log('anon sube a otra carpeta (ERR)', await q('anon', {}, "insert into storage.objects(bucket_id,name) values ('adelantos','x/hack.jpg')"));
+console.log('anon sube nombre adivinable (ERR)', await q('anon', {}, "insert into storage.objects(bucket_id,name) values ('adelantos','capturas/1.jpg')"));
+console.log('anon sube a productos (ERR)', await q('anon', {}, "insert into storage.objects(bucket_id,name) values ('productos','capturas/" + uuid + ".jpg')"));
+console.log('anon lista capturas (0)', await q('anon', {}, "select name from storage.objects where bucket_id='adelantos'"));
+console.log('anon borra captura (0)', await q('anon', {}, "delete from storage.objects where bucket_id='adelantos' returning name"));
+console.log('admin ve capturas', await q('authenticated', {email:'admin@test.com'}, "select name from storage.objects where bucket_id='adelantos'"));

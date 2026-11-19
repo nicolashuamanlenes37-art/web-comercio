@@ -4,6 +4,7 @@
 @import './base.css';
 
 @import './components/button.css';
+@import './components/form.css';
 @import './components/pill.css';
 @import './components/product-card.css';
 @import './components/tile.css';

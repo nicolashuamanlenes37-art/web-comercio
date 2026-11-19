@@ -27,6 +27,9 @@ const tokens = () => ({
   STORE_PHONE: prettyPhone(STORE.whatsapp),
   PAYMENTS_AND: listText(STORE.payments),
   PAYMENTS_OR: listText(STORE.payments, 'disjunction'),
+  DEPOSIT_PERCENT: STORE.reservation.percent,
+  BALANCE_PERCENT: 100 - STORE.reservation.percent,
+  DEPOSIT_METHODS: listText(STORE.reservation.methods, 'disjunction'),
 });
 const escHtml = (v) => String(v).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const fillTokens = (html) => {

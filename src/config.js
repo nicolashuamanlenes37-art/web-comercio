@@ -12,6 +12,15 @@ export const STORE = {
   instagram: '',
   city: 'Lima, Perú',
   payments: ['Yape', 'Plin', 'efectivo'],
+
+  // Reserva: el cliente paga un adelanto por Yape/Plin para separar su pedido
+  // y el resto al recibirlo. El adelanto no se devuelve si el cliente cancela.
+  reservation: {
+    percent: 30,
+    methods: ['Yape', 'Plin'],
+    phone: '918460597', // número donde se yapea / plinea
+    holder: 'Nicolás Ricardo Huaman Lenes', // nombre que aparece en Yape
+  },
   // Horario de atención. Ej.: 'Lunes a sábado, 9:00 a 19:00'. Vacío = no se muestra.
   hours: 'Lunes a sábado, de 8:00 a. m. a 6:00 p. m.',
   // El mismo horario para Google (formato schema.org). Ej.: ['Mo-Sa 09:00-19:00']
@@ -47,6 +56,7 @@ export const SUPABASE = {
   url: env.VITE_SUPABASE_URL || '',
   key: env.VITE_SUPABASE_PUBLISHABLE_KEY || '',
   bucket: 'productos',
+  captures: 'adelantos', // capturas del pago de reserva
 };
 
 /** true cuando la página está conectada a Supabase (si no, usa el catálogo de ejemplo). */

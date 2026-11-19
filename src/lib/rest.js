@@ -30,3 +30,20 @@ export async function restInsert(table, row) {
   });
   if (!res.ok) throw new Error(`${table}: ${res.status} ${await res.text()}`);
 }
+
+/** Sube un archivo a un bucket de Storage (solo crea, nunca reemplaza) y devuelve su URL pública. */
+export async function restUpload(bucket, path, blob, contentType) {
+  const res = await fetch(`${SUPABASE.url}/storage/v1/object/${bucket}/${path}`, {
+    method: 'POST',
+    headers: {
+      apikey: SUPABASE.key,
+      Authorization: `Bearer ${SUPABASE.key}`,
+      'Content-Type': contentType,
+      'x-upsert': 'false',
+    },
+    body: blob,
+    signal: AbortSignal.timeout(30000), // fotos desde datos móviles
+  });
+  if (!res.ok) throw new Error(`upload: ${res.status} ${await res.text()}`);
+  return `${SUPABASE.url}/storage/v1/object/public/${bucket}/${path}`;
+}
